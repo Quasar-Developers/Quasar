@@ -3,11 +3,10 @@
 Quasar is a collection of plugins, data/resource packs, and tools aiming to
 implement modded gameplay on vanilla Minecraft clients. 
 
-Quasar's code is licensed under the GNU Affero General Public License Version 3.0,
-with exceptions allowing it to be run and distributed alongside Minecraft. Most 
-resources are licensed under the Creative Commons licenses, although some exceptions
-apply. Licensing details can be viewed in the `LICENSE.md` file. Text for Quasar's
-licenses can be found in the `LICENSES` folder.
+Quasar's code is licensed under the GNU AGPL 3.0, with exceptions allowing it to be 
+run and distributed alongside Minecraft. Most resources are licensed under the Creative
+Commons licenses, although some exceptions apply. Licensing details can be viewed in
+the `LICENSE.md` file. Text for Quasar's licenses can be found in the `LICENSES` folder.
 
 Quasar is very early in development and may contain non-free placeholder assets, a
 list of all non-free assets currently being used by the project can be found in the

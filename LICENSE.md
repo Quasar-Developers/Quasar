@@ -1,7 +1,7 @@
 # Quasar Licensing Info
 
-Quasar is licensed under two main licenses, the GNU Affero General Public License 3.0
-and the Creative Commons Attribution-ShareAlike 4.0 International license. Quasar is
+Quasar is licensed under two main licenses, the GNU AGPL 3.0 and the 
+Creative Commons Attribution-ShareAlike 4.0 International license. Quasar is
 based off of Horizon End's Ion plugin, which at the time of writing, is available under
 the GNU General Public License 3.0. A copy of each license included in Quasar can be
 found in the `LICENSES` directory at the project root. Further licensing information
