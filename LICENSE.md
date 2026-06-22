@@ -34,7 +34,8 @@ license is the Creative Commons Attribution-ShareAlike 4.0 International license
 which requires that anybody who uses the asset provides attribution to its creator and
 that any assets derived from it be released under the same license.
 
-Some assets, for one reason or another may be licensed under a non-free license such as one of the Creative Commons non-commercial licenses. Generally, we do not accept
+Some assets, for one reason or another may be licensed under a non-free license such
+as one of the Creative Commons non-commercial licenses. Generally, we do not accept
 non-free assets except for a very good reason, and we will always welcome suggestions
 for free assets to replace them. All non-free assets are listed in the `NONFREE.md` file
 at the project root.
