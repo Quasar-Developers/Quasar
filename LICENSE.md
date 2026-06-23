@@ -40,7 +40,9 @@ non-free assets without a very good reason, and we will always welcome suggestio
 for free assets to replace them. All non-free assets are listed in the `NONFREE.md`
 file at the project root.
 
-In order to simplify code licensing, all assets have an associated attributions.json file
+In order to simplify code licensing, all assets have an associated `attributions.json` file
 with information about the creator, where it was found, and what license it is being used
 under. These files are used to automatically generate attribution info and to ensure license
-compliance.
+compliance. Further documentation for the `attributions.json` format can be found in
+`docs/attributions-files.md`
+
