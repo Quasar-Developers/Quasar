@@ -1,0 +1,2 @@
+# Resource Generator Dev Addon Manifest
+main: dev.kate.erd.devaddons.generator.GeneratorAddon

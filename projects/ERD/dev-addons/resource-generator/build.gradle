@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+group = 'dev.kate.erd.devaddons'
+version = '1.0.0-DEV'
+repositories {
+    mavenCentral()
+}
+dependencies {
+    compileOnly project(':erd-core')
+}
+
+// Ensure erd-core is compiled before this module
+tasks.compileJava.dependsOn(':erd-core:compileJava')
+
+// Configure after evaluation so we can reference the shadowJar task
+afterEvaluate {
+    dependencies {
+        compileOnly files(project(':erd-bukkit').tasks.shadowJar.outputs.files)
+    }
+    tasks.compileJava.dependsOn(':erd-bukkit:shadowJar')
+}
+
+shadowJar {
+    archiveClassifier.set('')
+    archiveBaseName.set('resource-generator')
+    dependencies {
+        exclude(project(':erd-core'))
+        exclude(project(':erd-bukkit'))
+    }
+}
+build.dependsOn shadowJar
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}

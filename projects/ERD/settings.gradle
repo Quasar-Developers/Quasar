@@ -1,0 +1,12 @@
+rootProject.name = 'ERD'
+
+include 'erd-core'
+include 'erd-bukkit'
+
+// Addons
+include 'addons:example-reactor'
+project(':addons:example-reactor').projectDir = file('addons/example-reactor')
+
+// Dev Addons
+include 'dev-addons:resource-generator'
+project(':dev-addons:resource-generator').projectDir = file('dev-addons/resource-generator')

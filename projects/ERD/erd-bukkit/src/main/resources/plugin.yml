@@ -1,0 +1,34 @@
+name: ERD
+version: '${version}'
+main: dev.kate.erd.bukkit.ErdPlugin
+api-version: '1.21'
+prefix: ERD
+authors: [ kate ]
+description: Multi-type logistics network framework for POWER, PIPE, and DATA networks
+
+commands:
+  mainframe:
+    description: Mainframe binding and control plane commands
+    usage: /mainframe <list|bind|unbind|status|help>
+    permission: erd.mainframe
+  erddebug:
+    description: Debug tool for inspecting ERD systems
+    usage: /erddebug <network|machine|reactor|here|stats|reload>
+    permission: erd.debug
+    aliases: [erddbg, erd]
+
+permissions:
+  erd.mainframe:
+    description: Allows use of mainframe commands
+    default: op
+  erd.debug:
+    description: Allows use of debug tools
+    default: op
+    children:
+      erd.reloadaddons: true
+  erd.admin:
+    description: Full ERD admin access
+    default: op
+    children:
+      erd.mainframe: true
+      erd.debug: true
