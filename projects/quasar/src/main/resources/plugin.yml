@@ -1,0 +1,11 @@
+name:        Quasar
+version:     3.0.0.1
+website:     https://quasarmc.net
+description: The Quasar core plugin.
+author:      Quasar Contributors (see GitHub)
+
+main:        net.quasarmc.quasar.core.plugin.QuasarCorePlugin
+api-version: '26.2'
+load:        STARTUP
+prefix:      Quasar
+provides:    [ QuasarAPI, ERD ]
