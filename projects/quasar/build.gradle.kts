@@ -86,7 +86,7 @@ tasks {
     // We can technically skip welding the datapack and copying it into the resources
     // directory and just keep the entire datapack in resources/custom_datapack, but
     // in the future we may need to include something else, so it's nice to keep
-    // this here just in case since it doesn't add any overhead.
+    // this here just in case since it doesn't add much overhead.
     register<Copy>("copyDataPack") {
         dependsOn("weldDataPack")
 
