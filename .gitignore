@@ -14,3 +14,6 @@
 
 # minecraft server files
 /projects/*/run/
+
+# generated files
+/projects/*/src/generated/
