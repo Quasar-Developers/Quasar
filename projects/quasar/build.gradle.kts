@@ -69,7 +69,7 @@ tasks {
         dependsOn("configurePython")
 
         venvExec = "weld"
-        args = listOf("--dir",  "build/weld/data",
+        args = listOf("--dir",  layout.buildDirectory.dir("weld/data").get().toString(),
                       "--name", "main.zip",
                       "src/main/datapack")
     }
@@ -78,7 +78,7 @@ tasks {
         dependsOn("configurePython")
 
         venvExec = "weld";
-        args = listOf("--dir",  "build/weld/resources",
+        args = listOf("--dir",  layout.buildDirectory.dir("weld/resources").get().toString(),
                       "--name", "main.zip",
                       "src/main/resourcepack")
     }
@@ -90,7 +90,7 @@ tasks {
     register<Copy>("copyDataPack") {
         dependsOn("weldDataPack")
 
-        from(zipTree("build/weld/data/main.zip"))
+        from(zipTree(layout.buildDirectory.file("weld/data/main.zip")))
         into("src/generated/resources/custom_datapack")
     }
 
@@ -98,15 +98,15 @@ tasks {
         dependsOn(build)
         dependsOn("weldResourcePack")
 
-        from("build/libs/quasar.jar") {
+        from(layout.buildDirectory.file("libs/quasar.jar")) {
             into("plugins/")
         }
 
-        from("build/weld/resources/main.zip") {
+        from(layout.buildDirectory.file("weld/resources/main.zip")) {
             rename { "resources.zip" }
         }
 
         archiveFileName = "quasar-server.zip"
-        destinationDirectory = file("build/package")
+        destinationDirectory = layout.buildDirectory.dir("package")
     }
 }
