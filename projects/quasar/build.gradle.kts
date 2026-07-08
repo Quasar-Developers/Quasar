@@ -91,7 +91,7 @@ tasks {
         dependsOn("weldDataPack")
 
         from(zipTree(layout.buildDirectory.file("weld/data/main.zip")))
-        into("src/generated/resources/custom_datapack")
+        into("src/generated/resources/datapack/")
     }
 
     register<Zip>("packageServer") {
