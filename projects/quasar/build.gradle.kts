@@ -98,7 +98,7 @@ tasks {
         dependsOn(build)
         dependsOn("weldResourcePack")
 
-        from(layout.buildDirectory.file("libs/quasar.jar")) {
+        from(layout.buildDirectory.file("libs/quasar-all.jar")) {
             into("plugins/")
         }
 
