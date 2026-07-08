@@ -18,9 +18,37 @@ from contributing in the future.
 
 ## Project structure
 
-THERE IS NO PROJECT
+The Quasar repository is split into multiple projects, each of which can be found in
+the `/projects` directory. Some projects depend on other projects, so they may need to
+be built first. The most important project is `/projects/quasar/`, which contains the 
+Quasar core plugin and the Quasar API. If you are a contributor or hosting a forked server
+this is probably what you're looking for.
 
-## Build instructions
+Projects may contain additional top-level files or folders with project-specific details.
+Otherwise, all projects follow the same structure:
+```
+projects/*
+L README.md        - project-specific information
+L LICENSES/        - project-specific licenses
+I -------------------------------------------------------
+L build.gradle.kts - project build script
+L build/           - build outputs 
+L src/             - project source files
+  L main/          - all human-written code/assets
+  L generated/     - automatically generated source files
+```
 
-THERE IS NOTHING TO BUILD
+## Build/Install instructions
 
+The Quasar plugin can be built by running the following
+```shell
+./gradlew :quasar:packageServer
+```
+
+The build will create a zip file containing all of the files needed to add Quasar to a server
+at `/projects/quasar/build/package/quasar-server.zip`:
+```
+quasar-server.zip
+L plugins/      - Quasar and its dependencies
+L resources.zip - A resource pack you will have to host and point to in your server configuration.
+```
