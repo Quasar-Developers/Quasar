@@ -1,11 +1,13 @@
-import com.pswidersk.gradle.python.VenvTask
+import net.quasarmc.quasar.build.weld.WeldTask
 
 plugins {
-    kotlin("jvm") version "2.4.0"
+    kotlin("jvm")
 
     id("com.gradleup.shadow") version "9.5.1"
     id("xyz.jpenilla.run-paper") version "3.0.2"
     id("com.pswidersk.python-plugin") version "3.2.17"
+
+    id("weld")
 }
 
 repositories {
@@ -47,10 +49,6 @@ tasks {
         dependsOn(shadowJar)
     }
 
-    register("package") {
-        dependsOn("packageServer")
-    }
-
     runServer {
         minecraftVersion("26.2")
     }
@@ -59,28 +57,16 @@ tasks {
         dependsOn("copyDataPack")
     }
 
-    // TODO(XWASHERE): These always run, this can probably be solved with a gradle plugin.
-    register<VenvTask>("configurePython") {
-        venvExec = "pip"
-        args = listOf("install", "smithed")
+    register<WeldTask>("weldDataPack") {
+        output = layout.buildDirectory.file("weld/data.zip")
+
+        include(layout.projectDirectory.dir("src/main/datapack"))
     }
 
-    register<VenvTask>("weldDataPack") {
-        dependsOn("configurePython")
+    register<WeldTask>("weldResourcePack") {
+        output = layout.buildDirectory.file("weld/resources.zip")
 
-        venvExec = "weld"
-        args = listOf("--dir",  layout.buildDirectory.dir("weld/data").get().toString(),
-                      "--name", "main.zip",
-                      "src/main/datapack")
-    }
-
-    register<VenvTask>("weldResourcePack") {
-        dependsOn("configurePython")
-
-        venvExec = "weld";
-        args = listOf("--dir",  layout.buildDirectory.dir("weld/resources").get().toString(),
-                      "--name", "main.zip",
-                      "src/main/resourcepack")
+        include(layout.projectDirectory.dir("src/main/resourcepack"))
     }
 
     // We can technically skip welding the datapack and copying it into the resources
@@ -90,7 +76,7 @@ tasks {
     register<Copy>("copyDataPack") {
         dependsOn("weldDataPack")
 
-        from(zipTree(layout.buildDirectory.file("weld/data/main.zip")))
+        from(zipTree(layout.buildDirectory.file("weld/data.zip")))
         into("src/generated/resources/datapack/")
     }
 
@@ -102,7 +88,7 @@ tasks {
             into("plugins/")
         }
 
-        from(layout.buildDirectory.file("weld/resources/main.zip")) {
+        from(layout.buildDirectory.file("weld/resources.zip")) {
             rename { "resources.zip" }
         }
 
