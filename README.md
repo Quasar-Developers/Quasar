@@ -20,9 +20,9 @@ from contributing in the future.
 
 The Quasar repository is split into multiple projects, each of which can be found in
 the `/projects` directory. Some projects depend on other projects, so they may need to
-be built first. The most important projects are `quasar-core` and `quasar-api`, which 
-contain the Quasar content and the Quasar API. If you are a contributor or hosting a
-forked server this is probably what you're looking for.
+be built first. The most important project is `quasar-core` which contains the Quasar
+content and the Quasar API. If you are a contributor or hosting a forked server this is
+probably what you're looking for.
 
 Projects may contain additional top-level files or folders with project-specific details.
 Otherwise, all projects follow the same structure:

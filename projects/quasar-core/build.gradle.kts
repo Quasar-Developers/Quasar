@@ -1,5 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
     kotlin("jvm")
 
@@ -17,8 +15,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     compileOnly("io.papermc.paper:paper-api:26.2.build.+")
-
-    compileOnly(project(":quasar-api"))
 }
 
 sourceSets {
@@ -69,28 +65,12 @@ tasks {
         archiveFileName = "resources.zip"
     }
 
-    register<Zip>("packageServerResourcePack") {
-        // "main" pack keeps metadata
-        from(zipTree(project.tasks.named<Zip>("packageResourcePack").map { it.archiveFile }))
-
-        // everything else
-        from(zipTree(project(":quasar-api").tasks.named<Zip>("packageResourcePack").map { it.archiveFile })) {
-            exclude("pack.mcmeta")
-        }
-
-        archiveFileName = "server-resources.zip"
-    }
-
     register<Zip>("packageServer") {
         from(shadowJar.map { it.archiveFile }) {
             into("plugins/")
         }
 
-        from(project(":quasar-api").tasks.shadowJar.map { it.archiveFile }) {
-            into("plugins/")
-        }
-
-        from(project.tasks.named("packageServerResourcePack")) {
+        from(project.tasks.named("packageResourcePack")) {
             rename { "resources.zip" }
         }
 

@@ -1,6 +1,6 @@
 {
     "pack": {
-        "description": "Quasar Content Datapack",
+        "description": "Quasar Core Datapack",
         "min_format": [107, 1],
         "max_format": [107, 1]
     }

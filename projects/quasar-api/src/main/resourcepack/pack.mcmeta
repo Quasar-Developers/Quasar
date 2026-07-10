@@ -1,7 +1,0 @@
-{
-    "pack": {
-        "description": "Quasar API Resources",
-        "min_format": [88, 0],
-        "max_format": [88, 0]
-    }
-}

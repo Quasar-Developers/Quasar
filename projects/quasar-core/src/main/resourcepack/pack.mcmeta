@@ -1,6 +1,6 @@
 {
     "pack": {
-        "description": "Quasar Content Resources",
+        "description": "Quasar Core Resources",
         "min_format": [88, 0],
         "max_format": [88, 0]
     }
