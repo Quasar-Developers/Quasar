@@ -21,12 +21,11 @@ sourceSets {
     main {
         kotlin {
             srcDir("src/main/kotlin/")
-            srcDir("src/generated/kotlin/")
         }
 
         resources {
             srcDir("src/main/resources/")
-            srcDir("src/generated/resources/")
+            srcDir(layout.buildDirectory.dir("generated/copyDataPack/resources"))
         }
     }
 }
@@ -35,46 +34,43 @@ kotlin {
     jvmToolchain(25)
 }
 
-tasks {
-    build {
-        dependsOn(shadowJar)
+tasks.build {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.runServer {
+    minecraftVersion("26.2")
+}
+
+tasks.processResources {
+    dependsOn(copyDataPack)
+
+    duplicatesStrategy = DuplicatesStrategy.WARN
+}
+
+// The data pack is kept out of the resource folder so that if we need to we can
+// use something like weld in the future
+val copyDataPack = tasks.register<Copy>("copyDataPack") {
+    from("src/main/datapack/")
+
+    into(layout.buildDirectory.dir("generated/copyDataPack/resources/"))
+}
+
+val packageResourcePack = tasks.register<Zip>("packageResourcePack") {
+    from(file("src/main/resourcepack/"))
+
+    archiveFileName = "resources.zip"
+}
+
+val packageServer = tasks.register<Zip>("packageServer") {
+    from(tasks.shadowJar) {
+        into("plugins/")
     }
 
-    runServer {
-        minecraftVersion("26.2")
+    from(packageResourcePack) {
+        rename { "resources.zip" }
     }
 
-    processResources {
-        dependsOn("copyDataPack")
-
-        duplicatesStrategy = DuplicatesStrategy.WARN
-    }
-
-    // The data pack is kept out of the resource folder so that if we need to we can
-    // use something like weld in the future
-    register<Copy>("copyDataPack") {
-        from("src/main/datapack/")
-
-        into("src/generated/resources/datapack/")
-    }
-
-    register<Zip>("packageResourcePack") {
-        from(file("src/main/resourcepack/"))
-        from(file("src/generated/resourcepack/"))
-
-        archiveFileName = "resources.zip"
-    }
-
-    register<Zip>("packageServer") {
-        from(shadowJar.map { it.archiveFile }) {
-            into("plugins/")
-        }
-
-        from(project.tasks.named("packageResourcePack")) {
-            rename { "resources.zip" }
-        }
-
-        archiveFileName = "quasar-server.zip"
-        destinationDirectory = layout.buildDirectory.dir("package")
-    }
+    archiveFileName = "quasar-server.zip"
+    destinationDirectory = layout.buildDirectory.dir("package")
 }

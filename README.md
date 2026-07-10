@@ -34,8 +34,7 @@ I -------------------------------------------------------
 L build.gradle.kts - project build script
 L build/           - build outputs 
 L src/             - project source files
-  L main/          - all human-written code/assets
-  L generated/     - automatically generated source files
+  L main/          - all runtime code
 ```
 
 ## Build/Install instructions
