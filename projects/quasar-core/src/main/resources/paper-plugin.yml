@@ -1,9 +1,7 @@
-# Sure! Let's permanently attach our plugin to the Paper API!
-
-name:        Quasar
+name:        QuasarCore
 version:     3.0.0.1
 website:     https://quasarmc.net
-description: The Quasar core plugin.
+description: Quasar content
 author:      Quasar Contributors (see GitHub)
 
 main:         net.quasarmc.quasar.core.plugin.QuasarCorePlugin
@@ -11,4 +9,3 @@ bootstrapper: net.quasarmc.quasar.core.plugin.QuasarCorePluginBootstrap
 api-version:  '26.2'
 load:         STARTUP
 prefix:       Quasar
-provides:     [ QuasarAPI, ERD ]

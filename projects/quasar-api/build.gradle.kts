@@ -20,13 +20,13 @@ dependencies {
 sourceSets {
     main {
         kotlin {
-            srcDir("src/main/kotlin/")
-            srcDir("src/generated/kotlin/")
+            srcDir("src/main/kotlin")
+            srcDir("src/generated/kotlin")
         }
 
         resources {
-            srcDir("src/main/generated/")
-            srcDir("src/generated/resources/")
+            srcDir("src/main/resources")
+            srcDir("src/generated/resources")
         }
     }
 }
@@ -46,10 +46,10 @@ tasks {
 
     processResources {
         dependsOn("copyDataPack")
+
+        duplicatesStrategy = DuplicatesStrategy.WARN
     }
 
-    // The data pack is kept out of the resource folder so that if we need to we can
-    // use something like weld in the future
     register<Copy>("copyDataPack") {
         from("src/main/datapack/")
         into("src/generated/resources/datapack/")
@@ -59,20 +59,5 @@ tasks {
         from("src/main/resourcepack/")
 
         archiveFileName = "resources.zip"
-        destinationDirectory = layout.buildDirectory.dir("package")
-    }
-
-    register<Zip>("packageServer") {
-        dependsOn(build)
-        dependsOn("packageResourcePack")
-
-        from(layout.buildDirectory.file("libs/quasar-all.jar")) {
-            into("plugins/")
-        }
-
-        from(layout.buildDirectory.file("package/resources.zip"))
-
-        archiveFileName = "quasar-server.zip"
-        destinationDirectory = layout.buildDirectory.dir("package")
     }
 }

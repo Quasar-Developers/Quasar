@@ -20,9 +20,9 @@ from contributing in the future.
 
 The Quasar repository is split into multiple projects, each of which can be found in
 the `/projects` directory. Some projects depend on other projects, so they may need to
-be built first. The most important project is `/projects/quasar/`, which contains the 
-Quasar core plugin and the Quasar API. If you are a contributor or hosting a forked server
-this is probably what you're looking for.
+be built first. The most important projects are `quasar-core` and `quasar-api`, which 
+contain the Quasar content and the Quasar API. If you are a contributor or hosting a
+forked server this is probably what you're looking for.
 
 Projects may contain additional top-level files or folders with project-specific details.
 Otherwise, all projects follow the same structure:
@@ -42,11 +42,11 @@ L src/             - project source files
 
 The Quasar plugin can be built by running the following
 ```shell
-./gradlew :quasar:packageServer
+./gradlew :quasar-core:packageServer
 ```
 
 The build will create a zip file containing all of the files needed to add Quasar to a server
-at `/projects/quasar/build/package/quasar-server.zip`:
+at `/projects/quasar-core/build/package/quasar-server.zip`:
 ```
 quasar-server.zip
 L plugins/      - Quasar and its dependencies

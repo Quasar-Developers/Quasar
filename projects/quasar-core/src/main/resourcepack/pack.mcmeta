@@ -1,6 +1,6 @@
 {
     "pack": {
-        "description": "Quasar Plugin Resources",
+        "description": "Quasar Content Resources",
         "min_format": [88, 0],
         "max_format": [88, 0]
     }

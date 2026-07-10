@@ -1,0 +1,11 @@
+name:        QuasarAPI
+version:     3.0.0.1
+website:     https://quasarmc.net
+description: The Quasar API
+author:      Quasar Contributors (see GitHub)
+
+main:         net.quasarmc.quasar.api.plugin.QuasarAPIPlugin
+bootstrapper: net.quasarmc.quasar.api.plugin.QuasarAPIPluginBootstrap
+api-version:  '26.2'
+load:         STARTUP
+prefix:       Quasar API

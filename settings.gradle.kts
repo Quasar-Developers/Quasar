@@ -1,6 +1,9 @@
 rootProject.name = "quasar"
 
 // Quasar plugin
-include("quasar")
-project(":quasar").projectDir = file("projects/quasar/")
+include("quasar-core")
+project(":quasar-core").projectDir = file("projects/quasar-core/")
 
+// Quasar API
+include("quasar-api")
+project(":quasar-api").projectDir = file("projects/quasar-api/")
