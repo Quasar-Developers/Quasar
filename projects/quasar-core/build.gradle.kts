@@ -53,7 +53,7 @@ tasks.processResources {
 val copyDataPack = tasks.register<Copy>("copyDataPack") {
     from("src/main/datapack/")
 
-    into(layout.buildDirectory.dir("generated/copyDataPack/resources/"))
+    into(layout.buildDirectory.dir("generated/copyDataPack/resources/datapack"))
 }
 
 val packageResourcePack = tasks.register<Zip>("packageResourcePack") {
