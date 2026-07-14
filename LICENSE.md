@@ -1,11 +1,10 @@
 # Quasar Licensing Info
 
 Quasar is licensed under two main licenses, the GNU AGPL 3.0 and the 
-Creative Commons Attribution-ShareAlike 4.0 International license. Quasar is
-based off of Horizon End's Ion plugin, which at the time of writing, is available under
-the GNU General Public License 3.0. A copy of each license included in Quasar can be
-found in the `LICENSES` directory at the project root. Further licensing information
-for different parts of the codebase is available below.
+Creative Commons Attribution-ShareAlike 4.0 International license. A copy of each license
+included in Quasar can be found in the `LICENSES` directory at the project root. Licenses
+used by specific projects are available in the `<PROJECT>/LICENSES` directories instead.
+Further licensing information for different parts of the codebase is available below.
 
 ## Code Licensing (`*.java`/`*.kt`/all build files/Quasar datapack)
 
@@ -25,6 +24,13 @@ choice (codeberg/github/gitlab/etc) and to provide players with links to your re
 links to the repositories for any plugins that you use, and a link to the versions of paper
 and Minecraft that your server is running. Providing version info for all code your server
 is running can help players find the right version of the source code.
+
+### Exception: ERD (`erd`)
+
+Quasar uses Katee8948's pipe and multiblock library, ERD, as a backend for the Quasar API.
+ERD is licensed under the permissive MIT license (`erd/LICENSES/MIT.txt`), In order to
+simplify licensing and to contribute back to the library, all changes that Quasar makes to ERD
+are also licensed under the MIT license instead of the AGPL.
 
 ## Asset Licensing (all resource files)
 

@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+group = 'dev.kate.erd.addons'
+version = '1.0.0'
+repositories {
+    mavenCentral()
+}
+dependencies {
+    compileOnly project(':erd-core')
+
+    // Test dependencies - tests need core classes at compile time
+    testImplementation project(':erd-core')
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core:3.25.3'
+    testImplementation 'org.mockito:mockito-core:5.11.0'
+}
+
+// Ensure erd-core is compiled before this module
+tasks.compileJava.dependsOn(':erd-core:compileJava')
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+afterEvaluate {
+    dependencies {
+        compileOnly files(project(':erd-bukkit').tasks.shadowJar.outputs.files)
+    }
+    tasks.compileJava.dependsOn(':erd-bukkit:shadowJar')
+}
+
+shadowJar {
+    archiveClassifier.set('')
+    archiveBaseName.set('example-reactor')
+    // Don't include erd-core or erd-bukkit (provided by main plugin)
+    dependencies {
+        exclude(project(':erd-core'))
+        exclude(project(':erd-bukkit'))
+    }
+}
+build.dependsOn shadowJar
+java {
+    sourceCompatibility = JavaVersion.VERSION_26
+    targetCompatibility = JavaVersion.VERSION_26
+}

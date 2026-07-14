@@ -1,0 +1,48 @@
+// Moved buildscript and required imports above plugins as Gradle requires
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url 'https://repo.jenkins-ci.org/public/' }
+    }
+    dependencies {
+        // HttpClient + Mime for multipart file upload from Gradle
+        classpath 'org.apache.httpcomponents:httpclient:4.5.13'
+        classpath 'org.apache.httpcomponents:httpmime:4.5.13'
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+allprojects {
+    group = 'dev.kate'
+    version = '2.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(26)
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.release.set(26)
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+

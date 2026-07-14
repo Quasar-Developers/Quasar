@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+    id 'xyz.jpenilla.run-paper' version '3.0.2'
+    id 'com.gradleup.shadow' version '8.3.0'
+}
+
+repositories {
+    maven {
+        name = 'papermc'
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+}
+
+dependencies {
+    implementation project(':erd-core')
+    compileOnly 'io.papermc.paper:paper-api:26.2.build.34-alpha' // shut up this is a great idea
+
+    // Testing
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core:3.25.3'
+    testImplementation 'org.mockito:mockito-core:5.11.0'
+}
+
+tasks {
+    runServer {
+        minecraftVersion('26.2')
+    }
+
+    shadowJar {
+        archiveClassifier.set('')
+        // Ensure erd-core is included
+        configurations = [project.configurations.runtimeClasspath]
+    }
+
+    build {
+        dependsOn shadowJar
+    }
+
+    // Disable the regular jar task to avoid confusion
+    jar {
+        enabled = false
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
