@@ -1,3 +1,8 @@
+This is Brillanix's own development fork for Quasar.
+(and yes thats mostly it)
+
+# Quasar's original README.md
+
 # Quasar Monorepo
 
 Quasar is a collection of plugins, data/resource packs, and tools aiming to

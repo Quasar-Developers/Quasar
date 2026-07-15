@@ -5,30 +5,39 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Color
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 
 class QuasarPlugin : JavaPlugin {
     constructor() {
-        // TODO: This is bad, make this into a /quasar subcommand or something
-        registerCommand("version") { commandSourceStack, args ->
-            commandSourceStack.sender.sendMessage(
-                Component.textOfChildren(
-                    Component.text("Quasar ").color(TextColor.fromHexString("#38e5e4")),
-                    Component.text("[VERSION]"),
-                    Component.newline(),
-                    Component.text("Quasar is licensed under the GNU Affero General Public License 3.0, you " +
-                            "are free to modify and distribute it. You should have access to the source " +
-                            "code of the version running on this server, if a modified version of the plugin " +
-                            "is being hosted without sharing the source, please contact @xwashere or @corrstud " +
-                            "on Discord."),
-                    Component.newline(),
-                    Component.text("You can access an unmodified version of the plugin's code "),
-                    Component.text("here").clickEvent(ClickEvent.openUrl("https://quasarmc.net")),
-                    Component.text(".")
-                )
-            )
+        // TODO: Placeholder command. (so don't bother softcoding this)
+        registerCommand("quasar") { commandSourceStack, args ->
+            var subcmd = args.getOrNull(0)
+            when (subcmd) {
+                "about" -> {
+                    commandSourceStack.sender.sendMessage(MiniMessage.miniMessage().deserialize(
+                        "<#ffffff>Quasar <#38e5e4>v[VERSION]\n"
+                        +"<#e0e0e0>    Description currently unfinished.\n"
+                        +"<#a0e0ff>You can access this plugin's source code <click:open_url:\"https://quasarmc.net/\"><u>here</u></click>.\n"
+                        +"<#ffffff>Do <#a0e0ff>/quasar help</#a0e0ff> for a list of subcommands."
+                    ))
+                }
+                "help" -> {
+                    commandSourceStack.sender.sendMessage(MiniMessage.miniMessage().deserialize(
+                        "<#ffffff>Quasar's subcommands:\n"
+                        +"<#e0e0e0>    /quasar about - Display Quasar's version and information about it.\n"
+                        +"<#e0e0e0>    /quasar help - Display help about Quasar's subcommands."
+                    ))
+                }
+                else -> {
+                    commandSourceStack.sender.sendMessage(MiniMessage.miniMessage().deserialize(
+                        "<#ffa0a0>Unknown subcommand${if(subcmd == null){""} else {" \"$subcmd\""}}.\n"
+                        +"Type <#a0e0ff>/quasar help</#a0e0ff> for a list of subcommands."
+                    ))
+                }
+            }
         }
     }
 }
