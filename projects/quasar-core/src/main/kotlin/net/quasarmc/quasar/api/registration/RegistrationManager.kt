@@ -1,9 +1,12 @@
 package net.quasarmc.quasar.api.registration
 
+import net.quasarmc.quasar.api.plugin.QuasarPlugin
 import net.quasarmc.quasar.api.registration.events.BeginReloadEvent
 import net.quasarmc.quasar.api.registration.events.EndReloadEvent
 import net.quasarmc.quasar.api.registration.events.RegistrationEvent
 import net.quasarmc.quasar.api.registration.events.RegistryRegistrationEvent
+import net.quasarmc.quasar.api.registration.registries.CustomRegistryRegistry
+import org.bukkit.NamespacedKey
 
 /**
  * Singleton for managing the Quasar API's registration system lifecycle
@@ -15,18 +18,25 @@ object RegistrationManager {
      * Clears registries and initiates registration
      */
     fun reload() {
-        // i've considered making this cancellable, i may do that in the future.
+        QuasarPlugin.LOGGER.info("Reloading registries...")
+
         BeginReloadEvent().callEvent()
 
-        // todo: purge registries
+        // purge registries
+        for ((key, registry) in CustomRegistryRegistry) registry.removeAll();
+        CustomRegistryRegistry.removeAll()
 
         // load new registries
+        CustomRegistryRegistry.runPreRegistration()
         RegistryRegistrationEvent().callEvent()
 
         // load new registry data
+        for ((key, registry) in CustomRegistryRegistry) registry.runPreRegistration();
         RegistrationEvent().callEvent()
 
         // registration done
         EndReloadEvent().callEvent()
+
+        QuasarPlugin.LOGGER.info("Registry reload complete.")
     }
 }

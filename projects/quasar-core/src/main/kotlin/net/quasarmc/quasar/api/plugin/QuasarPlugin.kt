@@ -13,12 +13,20 @@ import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 
 class QuasarPlugin : JavaPlugin() {
+    companion object {
+        lateinit var plugin: QuasarPlugin;
+
+        val LOGGER get() = plugin.logger;
+    };
+
     /**
      * Quasar core addon. This is the entry point to all core code.
      */
     private val addon = QuasarCoreAddon();
 
     override fun onLoad() {
+        plugin = this;
+
         // Register core addon
         AddonManager.register(addon);
     }
