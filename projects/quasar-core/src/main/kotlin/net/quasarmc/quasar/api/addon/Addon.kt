@@ -2,9 +2,6 @@ package net.quasarmc.quasar.api.addon
 
 /**
  * Addon class for the Quasar API. See {QuasarCoreAddon} for an example on how to use it.
- *
- * Quasar addons are initialized during plugin bootstrapping, and therefore can only be used from
- * Paper plugins.
  */
 abstract class Addon {
     /**

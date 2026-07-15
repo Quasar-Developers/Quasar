@@ -5,14 +5,30 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
+import net.quasarmc.quasar.api.addon.AddonManager
+import net.quasarmc.quasar.api.registration.RegistrationManager
+import net.quasarmc.quasar.core.QuasarCoreAddon
 import org.bukkit.Color
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 
-class QuasarPlugin : JavaPlugin {
-    constructor() {
+class QuasarPlugin : JavaPlugin() {
+    /**
+     * Quasar core addon. This is the entry point to all core code.
+     */
+    private val addon = QuasarCoreAddon();
+
+    override fun onLoad() {
+        // Register core addon
+        AddonManager.register(addon);
+    }
+
+    override fun onEnable() {
+        // Reload registries
+        RegistrationManager.reload()
+
         // TODO: This is bad, make this into a /quasar subcommand or something
-        registerCommand("version") { commandSourceStack, args ->
+        registerCommand("quasar_version") { commandSourceStack, args ->
             commandSourceStack.sender.sendMessage(
                 Component.textOfChildren(
                     Component.text("Quasar ").color(TextColor.fromHexString("#38e5e4")),
@@ -29,6 +45,12 @@ class QuasarPlugin : JavaPlugin {
                     Component.text(".")
                 )
             )
+        }
+
+        registerCommand("quasar_reload") { commandSourceStack, args ->
+            commandSourceStack.sender.sendMessage("Reloading!")
+            RegistrationManager.reload()
+            commandSourceStack.sender.sendMessage("Done.")
         }
     }
 }
