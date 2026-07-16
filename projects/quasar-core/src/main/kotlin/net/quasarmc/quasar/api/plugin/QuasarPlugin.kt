@@ -19,7 +19,7 @@ class QuasarPlugin : JavaPlugin {
             when (subcmd) {
                 "about" -> {
                     commandSourceStack.sender.sendMessage(MiniMessage.miniMessage().deserialize(
-                        "<#ffffff>Quasar <#38e5e4>v[VERSION]\n"
+                        "<#38e5e4>Quasar <#ffffff>v[VERSION]\n"
                         +"<#e0e0e0>    Description currently unfinished.\n"
                         +"<#a0e0ff>You can access this plugin's source code <click:open_url:\"https://quasarmc.net/\"><u>here</u></click>.\n"
                         +"<#ffffff>Do <#a0e0ff>/quasar help</#a0e0ff> for a list of subcommands."
