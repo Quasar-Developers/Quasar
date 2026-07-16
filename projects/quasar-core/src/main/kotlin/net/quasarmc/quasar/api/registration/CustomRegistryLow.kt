@@ -39,7 +39,7 @@ open class CustomRegistryLow<TValue> : AbstractCustomRegistry<TValue>() {
     inner class CustomRegistryIteratorLow : Iterator<Pair<NamespacedKey, TValue>> {
         val iterator = data.iterator()
 
-        override fun next(): Pair<NamespacedKey, TValue> = Pair(iterator.next().key, iterator.next().value)
+        override fun next(): Pair<NamespacedKey, TValue> = iterator.next().toPair()
         override fun hasNext(): Boolean = iterator.hasNext()
     }
 }
