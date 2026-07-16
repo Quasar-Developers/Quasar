@@ -8,4 +8,6 @@ import net.quasarmc.quasar.api.addon.Addon
 class QuasarCoreAddon : Addon() {
     override val id   = "quasar"
     override val name = "Quasar Core"
+    override val version = "0.0.0"
+    override val description = "The core addon for Quasar."
 }

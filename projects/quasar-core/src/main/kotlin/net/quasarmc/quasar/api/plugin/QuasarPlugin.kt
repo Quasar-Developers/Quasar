@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.quasarmc.quasar.api.addon.AddonManager
 import org.bukkit.Color
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
@@ -29,6 +30,15 @@ class QuasarPlugin : JavaPlugin {
                         "<#ffffff>Quasar's subcommands:\n"
                         +"<#e0e0e0>    /quasar about - Display Quasar's version and information about it.\n"
                         +"<#e0e0e0>    /quasar help - Display help about Quasar's subcommands."
+                    ))
+                }
+                "addons" -> {
+                    var addons = AddonManager.addons
+                    commandSourceStack.sender.sendMessage(MiniMessage.miniMessage().deserialize(
+                        "<#ffffff>Current addons:\n"
+                        + {addons.values.joinToString("\n"){a ->
+                            "<#e0e0e0>    ${a.name} [${a.id}] ${a.version}" as CharSequence
+                        }}
                     ))
                 }
                 else -> {

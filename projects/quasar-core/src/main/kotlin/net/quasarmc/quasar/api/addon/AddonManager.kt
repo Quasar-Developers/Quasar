@@ -7,6 +7,17 @@ object AddonManager {
     val addons = HashMap<String, Addon>();
 
     /**
+     * Unregisters an existing addon.
+     *
+     * @param id ID of the addon to unregister.
+    **/
+    fun unregister(id: String) {
+        if (!addons.contains(id))
+            throw AddonRegistrationException("There's no addon $id to unregister.")
+        addons.remove(id)
+    }
+
+    /**
      * Register a new addon.
      *
      * @param addon Addon to register

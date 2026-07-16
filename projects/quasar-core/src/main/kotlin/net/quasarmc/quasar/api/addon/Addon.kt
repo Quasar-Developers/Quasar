@@ -16,4 +16,20 @@ abstract class Addon {
      * The name of the addon that is displayed to users.
      */
     abstract val name: String
+
+    // TODO: Make a proper version class.
+    /**
+     * The addon's version.
+     *
+     * This doesn't have a specific format yet,
+     * and isn't used for any other than displaying.
+    **/
+    abstract val version: String
+
+    /**
+     * A description of the addon that will be displayed.
+     *
+     * You can use newlines (\n) in the description.
+    **/
+    abstract val description: String
 }
