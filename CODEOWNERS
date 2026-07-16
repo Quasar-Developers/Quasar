@@ -1,9 +1,3 @@
 # Require server head review for changing licensing details
 /LICENSE.md @Quasar-Developers/Directors
 /LICENSES/  @Quasar-Developers/Directors
-
-# Require maintainer review for changing repository root documentation/metadata files
-/AGENTS.md  @Quasar-Developers/Global-Maintainers
-/NONFREE.md @Quasar-Developers/Global-Maintainers
-/README.md  @Quasar-Developers/Global-Maintainers
-/CODEOWNERS @Quasar-Developers/Global-Maintainers
