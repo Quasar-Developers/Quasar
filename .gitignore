@@ -17,3 +17,6 @@
 
 # generated files
 /projects/*/src/generated/
+
+# extra files
+README.md
