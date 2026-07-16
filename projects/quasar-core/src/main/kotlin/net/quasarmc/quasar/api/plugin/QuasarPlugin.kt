@@ -5,11 +5,18 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.quasarmc.quasar.api.addon.AddonManager
+import net.quasarmc.quasar.api.registration.CustomRegistryLow
 import net.quasarmc.quasar.api.registration.RegistrationManager
+import net.quasarmc.quasar.api.registration.events.RegistryRegistrationEvent
+import net.quasarmc.quasar.api.registration.registries.CustomRegistryRegistry
 import net.quasarmc.quasar.core.QuasarCoreAddon
 import org.bukkit.Color
 import org.bukkit.NamespacedKey
+import org.bukkit.entity.Item
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 
 class QuasarPlugin : JavaPlugin() {
@@ -58,7 +65,22 @@ class QuasarPlugin : JavaPlugin() {
         registerCommand("quasar_reload") { commandSourceStack, args ->
             commandSourceStack.sender.sendMessage("Reloading!")
             RegistrationManager.reload()
-            commandSourceStack.sender.sendMessage("Done.")
+            commandSourceStack.sender.sendMessage("Done... Dumping quasar:root:")
+
+            for ((id, registry) in CustomRegistryRegistry) {
+                commandSourceStack.sender.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "L <#ff8080><bold>$id</bold> <yellow>-<reset> (${registry.count()} entries)"
+                ));
+            }
         }
+
+        server.pluginManager.registerEvents(object : Listener {
+            @EventHandler
+            fun onRegisterRegistries(ev: RegistryRegistrationEvent) {
+                ev.register("quasar", "numbers", CustomRegistryLow<Int>())
+                ev.register("quasar", "misc", CustomRegistryLow<Any>())
+                ev.register("quasar", "item", CustomRegistryLow<Item>())
+            }
+        }, this)
     }
 }
