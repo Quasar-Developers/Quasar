@@ -27,11 +27,9 @@ object RegistrationManager {
         CustomRegistryRegistry.removeAll()
 
         // load new registries
-        CustomRegistryRegistry.runPreRegistration()
         RegistryRegistrationEvent().callEvent()
 
         // load new registry data
-        for ((key, registry) in CustomRegistryRegistry) registry.runPreRegistration();
         RegistrationEvent().callEvent()
 
         // registration done

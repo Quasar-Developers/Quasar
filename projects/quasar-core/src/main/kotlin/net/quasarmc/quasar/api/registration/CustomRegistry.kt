@@ -5,9 +5,9 @@ import org.bukkit.NamespacedKey
 
 /**
  * Bare minimum custom registry implementation, for use by the root registry.
- * Prefer CustomRegistry for code simplicity.
+ * Prefer SimpleCustomRegistry for normal registries.
  */
-open class CustomRegistryLow<TValue> : AbstractCustomRegistry<TValue>() {
+open class CustomRegistry<TValue> : ICustomRegistry<TValue> {
     /**
      * Registered values
      */

@@ -1,23 +1,21 @@
 package net.quasarmc.quasar.api.plugin
 
-import io.papermc.paper.command.brigadier.BasicCommand
-import io.papermc.paper.command.brigadier.CommandSourceStack
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.quasarmc.quasar.api.addon.AddonManager
-import net.quasarmc.quasar.api.registration.AbstractCustomRegistry
-import net.quasarmc.quasar.api.registration.CustomRegistryLow
+import net.quasarmc.quasar.api.registration.CustomRegistry
+import net.quasarmc.quasar.api.registration.CustomResourceKey
+import net.quasarmc.quasar.api.registration.CustomResourcePointer
+import net.quasarmc.quasar.api.registration.HardcodedCustomResourcePointer
 import net.quasarmc.quasar.api.registration.RegistrationManager
 import net.quasarmc.quasar.api.registration.events.RegistrationEvent
 import net.quasarmc.quasar.api.registration.events.RegistryRegistrationEvent
 import net.quasarmc.quasar.api.registration.registries.CustomRegistryRegistry
+import net.quasarmc.quasar.api.registration.registries.TestRegistry
 import net.quasarmc.quasar.core.QuasarCoreAddon
-import org.bukkit.Bukkit
-import org.bukkit.Color
 import org.bukkit.NamespacedKey
-import org.bukkit.Server
 import org.bukkit.entity.Item
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -43,8 +41,8 @@ class QuasarPlugin : JavaPlugin() {
     }
 
     override fun onEnable() {
-        // Reload registries
-        RegistrationManager.reload()
+        // Register event listeners
+        TestRegistry.registerEventHandlers(this)
 
         // TODO: This is bad, make this into a /quasar subcommand or something
         registerCommand("quasar_version") { commandSourceStack, args ->
@@ -83,14 +81,15 @@ class QuasarPlugin : JavaPlugin() {
         server.pluginManager.registerEvents(object : Listener {
             @EventHandler
             fun onRegisterRegistries(ev: RegistryRegistrationEvent) {
-                ev.register("quasar", "numbers", CustomRegistryLow<Int>())
-                ev.register("quasar", "misc", CustomRegistryLow<Any>())
-                ev.register("quasar", "item", CustomRegistryLow<Item>())
+                ev.register("quasar", "numbers", CustomRegistry<Int>())
+                ev.register("quasar", "misc", CustomRegistry<Any>())
+                ev.register("quasar", "item", CustomRegistry<Item>())
+                ev.register(TestRegistry);
             }
 
             @EventHandler
             fun onRegister(ev: RegistrationEvent) {
-                ev.register<CustomRegistryLow<Int>, _>("quasar", "numbers") { registry ->
+                ev.register<CustomRegistry<Int>, _>("quasar", "numbers") { registry ->
                     registry["quasar", "one"]   = 1
                     registry["quasar", "two"]   = 2
                     registry["quasar", "three"] = 3
@@ -104,14 +103,17 @@ class QuasarPlugin : JavaPlugin() {
                 }
 
                 @Suppress("removal")
-                ev.register<CustomRegistryLow<Any>, _>("quasar", "misc") { registry ->
+                ev.register<CustomRegistry<Any>, _>("quasar", "misc") { registry ->
                     registry["quasar", "dog"]           = "dog"
                     registry["quasar", "eleven"]        = 11
-                    registry["quasar", "donotdothis"]   = CustomRegistryLow<Any>()
+                    registry["quasar", "donotdothis"]   = CustomRegistry<Any>()
                     registry["quasar", "thisisabukkit"] = server
                     registry["quasar", "theresmore"]    = server.spigot()
                 }
             }
         }, this)
+
+        // Reload registries
+        RegistrationManager.reload()
     }
 }
