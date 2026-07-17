@@ -5,6 +5,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
+import net.quasarmc.quasar.api.addon.AddonManager
 import org.bukkit.Color
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
@@ -31,4 +32,9 @@ class QuasarPlugin : JavaPlugin {
             )
         }
     }
+
+    override fun onEnable() {
+        AddonManager.registerListeners(this)
+    }
 }
+
