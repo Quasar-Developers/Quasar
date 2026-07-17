@@ -40,6 +40,11 @@ tasks.build {
 
 tasks.runServer {
     minecraftVersion("26.2")
+
+    // if running on a jvm with dcevm support, enable it
+    if (rootProject.ext["jvmSupportsDCEVM"] as Boolean) {
+        jvmArgs("-XX:+AllowEnhancedClassRedefinition")
+    }
 }
 
 tasks.processResources {
