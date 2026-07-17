@@ -7,13 +7,17 @@ import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.quasarmc.quasar.api.addon.AddonManager
+import net.quasarmc.quasar.api.registration.AbstractCustomRegistry
 import net.quasarmc.quasar.api.registration.CustomRegistryLow
 import net.quasarmc.quasar.api.registration.RegistrationManager
+import net.quasarmc.quasar.api.registration.events.RegistrationEvent
 import net.quasarmc.quasar.api.registration.events.RegistryRegistrationEvent
 import net.quasarmc.quasar.api.registration.registries.CustomRegistryRegistry
 import net.quasarmc.quasar.core.QuasarCoreAddon
+import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.NamespacedKey
+import org.bukkit.Server
 import org.bukkit.entity.Item
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -68,9 +72,11 @@ class QuasarPlugin : JavaPlugin() {
             commandSourceStack.sender.sendMessage("Done... Dumping quasar:root:")
 
             for ((id, registry) in CustomRegistryRegistry) {
-                commandSourceStack.sender.sendMessage(MiniMessage.miniMessage().deserialize(
-                    "L <#ff8080><bold>$id</bold> <yellow>-<reset> (${registry.count()} entries)"
-                ));
+                commandSourceStack.sender.sendMessage(
+                    MiniMessage.miniMessage().deserialize(
+                        "L <#ff8080><bold>$id</bold> <yellow>-<reset> (${registry.count()} entries)"
+                    )
+                );
             }
         }
 
@@ -80,6 +86,31 @@ class QuasarPlugin : JavaPlugin() {
                 ev.register("quasar", "numbers", CustomRegistryLow<Int>())
                 ev.register("quasar", "misc", CustomRegistryLow<Any>())
                 ev.register("quasar", "item", CustomRegistryLow<Item>())
+            }
+
+            @EventHandler
+            fun onRegister(ev: RegistrationEvent) {
+                ev.register<CustomRegistryLow<Int>, _>("quasar", "numbers") { registry ->
+                    registry["quasar", "one"]   = 1
+                    registry["quasar", "two"]   = 2
+                    registry["quasar", "three"] = 3
+                    registry["quasar", "four"]  = 4
+                    registry["quasar", "five"]  = 5
+                    registry["quasar", "six"]   = 6
+                    registry["quasar", "seven"] = 7
+                    registry["quasar", "eight"] = 8
+                    registry["quasar", "nine"]  = 9
+                    registry["quasar", "ten"]   = 10
+                }
+
+                @Suppress("removal")
+                ev.register<CustomRegistryLow<Any>, _>("quasar", "misc") { registry ->
+                    registry["quasar", "dog"]           = "dog"
+                    registry["quasar", "eleven"]        = 11
+                    registry["quasar", "donotdothis"]   = CustomRegistryLow<Any>()
+                    registry["quasar", "thisisabukkit"] = server
+                    registry["quasar", "theresmore"]    = server.spigot()
+                }
             }
         }, this)
     }

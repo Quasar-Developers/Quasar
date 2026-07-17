@@ -15,7 +15,5 @@ class EndReloadEvent : Event() {
         fun getHandlerList(): HandlerList = HANDLER_LIST
     }
 
-    override fun getHandlers(): HandlerList {
-        return HANDLER_LIST
-    }
+    override fun getHandlers(): HandlerList = HANDLER_LIST
 }

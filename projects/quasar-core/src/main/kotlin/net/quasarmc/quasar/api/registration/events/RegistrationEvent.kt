@@ -1,7 +1,12 @@
 package net.quasarmc.quasar.api.registration.events
 
+import net.quasarmc.quasar.api.registration.AbstractCustomRegistry
+import net.quasarmc.quasar.api.registration.RegistrationManager
+import net.quasarmc.quasar.api.registration.registries.CustomRegistryRegistry
+import org.bukkit.NamespacedKey
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
+import kotlin.time.TimedValue
 
 /**
  * Event signaling that registries are now accepting data.
@@ -15,7 +20,16 @@ class RegistrationEvent : Event() {
         fun getHandlerList(): HandlerList = HANDLER_LIST
     }
 
-    override fun getHandlers(): HandlerList {
-        return HANDLER_LIST
-    }
+    override fun getHandlers(): HandlerList = HANDLER_LIST
+
+    inline fun <reified TRegistry : AbstractCustomRegistry<TValue>, TValue> register(
+        id: NamespacedKey,
+        lambda: (registry: TRegistry) -> Unit
+    ) = lambda(CustomRegistryRegistry[id] as TRegistry);
+
+    inline fun <reified TRegistry : AbstractCustomRegistry<TValue>, TValue> register(
+        namespace: String,
+        id: String,
+        lambda: (registry: TRegistry) -> Unit
+    ) = register(NamespacedKey(namespace, id), lambda);
 }

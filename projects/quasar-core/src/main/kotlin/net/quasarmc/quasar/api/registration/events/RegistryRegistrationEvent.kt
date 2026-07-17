@@ -18,9 +18,7 @@ class RegistryRegistrationEvent : Event() {
         fun getHandlerList(): HandlerList = HANDLER_LIST
     }
 
-    override fun getHandlers(): HandlerList {
-        return HANDLER_LIST
-    }
+    override fun getHandlers(): HandlerList = HANDLER_LIST
 
     fun register(key: NamespacedKey, value: AbstractCustomRegistry<*>) {
         CustomRegistryRegistry[key] = value;
