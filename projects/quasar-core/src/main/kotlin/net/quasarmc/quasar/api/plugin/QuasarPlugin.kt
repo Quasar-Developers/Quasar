@@ -81,10 +81,12 @@ class QuasarPlugin : JavaPlugin() {
         server.pluginManager.registerEvents(object : Listener {
             @EventHandler
             fun onRegisterRegistries(ev: RegistryRegistrationEvent) {
+                ev.register("quasar", "root", CustomRegistryRegistry);
+
+                ev.register("quasar", "test", TestRegistry);
                 ev.register("quasar", "numbers", CustomRegistry<Int>())
                 ev.register("quasar", "misc", CustomRegistry<Any>())
                 ev.register("quasar", "item", CustomRegistry<Item>())
-                ev.register(TestRegistry);
             }
 
             @EventHandler
@@ -113,7 +115,17 @@ class QuasarPlugin : JavaPlugin() {
             }
         }, this)
 
-        // Reload registries
+        // TODO: Wait until all addons are enabled and ready and then run this
+        finalizeAPIStartup();
+    }
+
+    /**
+     * There's no easy way to know when all addons have been enabled and have attached listeners to Quasar's events,
+     * as there's no startup event that runs after onEnable but before things we care about, like world loading.
+     *
+     * This *should* be called when all addons are ready to do things like setting up registries.
+     */
+    fun finalizeAPIStartup() {
         RegistrationManager.reload()
     }
 }

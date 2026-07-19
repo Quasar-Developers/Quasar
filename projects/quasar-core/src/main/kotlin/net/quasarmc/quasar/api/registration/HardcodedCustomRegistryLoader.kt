@@ -17,6 +17,9 @@ class HardcodedCustomRegistryLoader<TValue>(private val registry: NamespacedKey)
 
     /**
      * Add a new provider to register data for.
+     *
+     * @param identifier The identifier to use for the registered object.
+     * @param provider   A function to provide the object to register on registry reloads.
      */
     fun <TTrue : TValue> register(identifier: NamespacedKey, provider: () -> TTrue): HardcodedCustomResourcePointer<TValue, TTrue> {
         val pointer = HardcodedCustomResourcePointer<TValue, TTrue>(CustomResourceKey(registry, identifier));

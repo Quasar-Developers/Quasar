@@ -10,7 +10,7 @@ class HardcodedCustomResourcePointer<out TBase, TValue : TBase>(
     /**
      * Stored reference to the true value of the referenced resource
      */
-    var known: TValue? = null;
+    private var known: TValue? = null;
 
     /**
      * Update the known reference
@@ -20,7 +20,7 @@ class HardcodedCustomResourcePointer<out TBase, TValue : TBase>(
     }
 
     override fun get(): TValue {
-        // todo: some kind of error
+        // todo: some kind of error for no value (it should have a value outside of registration)
         return known!!;
     }
 }

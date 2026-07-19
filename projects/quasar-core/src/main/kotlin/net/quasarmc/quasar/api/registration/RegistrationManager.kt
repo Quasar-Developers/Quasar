@@ -15,7 +15,7 @@ import org.bukkit.NamespacedKey
  */
 object RegistrationManager {
     /**
-     * Clears registries and initiates registration
+     * Clear all registries and reload data.
      */
     fun reload() {
         QuasarPlugin.LOGGER.info("Reloading registries...")
@@ -23,7 +23,9 @@ object RegistrationManager {
         BeginReloadEvent().callEvent()
 
         // purge registries
-        for ((key, registry) in CustomRegistryRegistry) registry.removeAll();
+        for ((key, registry) in CustomRegistryRegistry) {
+            if (registry != CustomRegistryRegistry) registry.removeAll()
+        }
         CustomRegistryRegistry.removeAll()
 
         // load new registries
