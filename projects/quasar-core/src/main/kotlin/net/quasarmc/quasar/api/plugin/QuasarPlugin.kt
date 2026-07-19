@@ -13,7 +13,6 @@ import net.quasarmc.quasar.api.registration.RegistrationManager
 import net.quasarmc.quasar.api.registration.events.RegistrationEvent
 import net.quasarmc.quasar.api.registration.events.RegistryRegistrationEvent
 import net.quasarmc.quasar.api.registration.registries.CustomRegistryRegistry
-import net.quasarmc.quasar.api.registration.registries.TestRegistry
 import net.quasarmc.quasar.core.QuasarCoreAddon
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Item
@@ -41,9 +40,6 @@ class QuasarPlugin : JavaPlugin() {
     }
 
     override fun onEnable() {
-        // Register event listeners
-        TestRegistry.registerEventHandlers(this)
-
         // TODO: This is bad, make this into a /quasar subcommand or something
         registerCommand("quasar_version") { commandSourceStack, args ->
             commandSourceStack.sender.sendMessage(
@@ -78,40 +74,11 @@ class QuasarPlugin : JavaPlugin() {
             }
         }
 
+        // TODO: This should be handled by the core addon.
         server.pluginManager.registerEvents(object : Listener {
             @EventHandler
             fun onRegisterRegistries(ev: RegistryRegistrationEvent) {
                 ev.register("quasar", "root", CustomRegistryRegistry);
-
-                ev.register("quasar", "test", TestRegistry);
-                ev.register("quasar", "numbers", CustomRegistry<Int>())
-                ev.register("quasar", "misc", CustomRegistry<Any>())
-                ev.register("quasar", "item", CustomRegistry<Item>())
-            }
-
-            @EventHandler
-            fun onRegister(ev: RegistrationEvent) {
-                ev.register<CustomRegistry<Int>, _>("quasar", "numbers") { registry ->
-                    registry["quasar", "one"]   = 1
-                    registry["quasar", "two"]   = 2
-                    registry["quasar", "three"] = 3
-                    registry["quasar", "four"]  = 4
-                    registry["quasar", "five"]  = 5
-                    registry["quasar", "six"]   = 6
-                    registry["quasar", "seven"] = 7
-                    registry["quasar", "eight"] = 8
-                    registry["quasar", "nine"]  = 9
-                    registry["quasar", "ten"]   = 10
-                }
-
-                @Suppress("removal")
-                ev.register<CustomRegistry<Any>, _>("quasar", "misc") { registry ->
-                    registry["quasar", "dog"]           = "dog"
-                    registry["quasar", "eleven"]        = 11
-                    registry["quasar", "donotdothis"]   = CustomRegistry<Any>()
-                    registry["quasar", "thisisabukkit"] = server
-                    registry["quasar", "theresmore"]    = server.spigot()
-                }
             }
         }, this)
 
