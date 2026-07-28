@@ -8,16 +8,9 @@ import net.quasarmc.quasar.core.QuasarCoreAddon
 
 @Suppress("UnstableApiUsage")
 class QuasarPluginBootstrap : PluginBootstrap {
-    /**
-     * Quasar core addon. This is the entry point to all core code.
-     */
-    private val addon = QuasarCoreAddon();
-
     override fun bootstrap(context: BootstrapContext) {
         context.lifecycleManager.registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY.newHandler {
             it.registrar().discoverPack(this.javaClass.getResource("/datapack")!!.toURI(), "data");
         })
-
-        AddonManager.register(addon);
     }
 }
