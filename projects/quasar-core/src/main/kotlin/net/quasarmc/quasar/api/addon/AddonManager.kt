@@ -1,6 +1,6 @@
 package net.quasarmc.quasar.api.addon
 
-import org.bukkit.plugin.java.JavaPlugin
+import net.quasarmc.quasar.api.addon.exceptions.AddonRegistrationException
 
 /**
  * Central class to manage all Quasar API addons and their life-cycles.
@@ -21,8 +21,3 @@ object AddonManager {
         addons[addon.id] = addon
     }
 }
-
-/**
- * Exception indicating an unrecoverable error during plugin registration.
- */
-class AddonRegistrationException(message: String) : RuntimeException(message);

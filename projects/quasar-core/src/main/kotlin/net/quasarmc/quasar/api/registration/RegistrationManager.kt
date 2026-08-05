@@ -1,6 +1,6 @@
 package net.quasarmc.quasar.api.registration
 
-import net.quasarmc.quasar.api.plugin.QuasarPlugin
+import net.quasarmc.quasar.core.QuasarPlugin
 import net.quasarmc.quasar.api.registration.events.BeginReloadEvent
 import net.quasarmc.quasar.api.registration.events.EndReloadEvent
 import net.quasarmc.quasar.api.registration.events.RegistrationEvent

@@ -1,24 +1,43 @@
-package net.quasarmc.quasar.api.plugin
+package net.quasarmc.quasar.core
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
-import net.quasarmc.quasar.api.addon.AddonManager
-import net.quasarmc.quasar.api.registration.CustomRegistry
-import net.quasarmc.quasar.api.registration.CustomResourceKey
-import net.quasarmc.quasar.api.registration.CustomResourcePointer
-import net.quasarmc.quasar.api.registration.HardcodedCustomResourcePointer
 import net.quasarmc.quasar.api.registration.RegistrationManager
-import net.quasarmc.quasar.api.registration.events.RegistrationEvent
 import net.quasarmc.quasar.api.registration.events.RegistryRegistrationEvent
 import net.quasarmc.quasar.api.registration.registries.CustomRegistryRegistry
-import net.quasarmc.quasar.core.QuasarCoreAddon
-import org.bukkit.NamespacedKey
-import org.bukkit.entity.Item
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
+import io.papermc.paper.plugin.bootstrap.BootstrapContext
+import io.papermc.paper.plugin.bootstrap.PluginBootstrap
+import io.papermc.paper.plugin.bootstrap.PluginProviderContext
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
+import net.quasarmc.quasar.api.addon.AddonManager
+import net.quasarmc.quasar.api.addon.Addon
+
+@Suppress("UnstableApiUsage")
+class QuasarPluginBootstrap : PluginBootstrap {
+    /**
+     * The core addon for Quasar.
+     */
+    val core = QuasarCoreAddon();
+
+    override fun bootstrap(context: BootstrapContext) {
+        // add our datapack
+        context.lifecycleManager.registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY.newHandler {
+            it.registrar().discoverPack(this.javaClass.getResource("/datapack")!!.toURI(), "data");
+        })
+
+        // register the core addon
+        AddonManager.register(core)
+    }
+
+    override fun createPlugin(context: PluginProviderContext): JavaPlugin {
+        return QuasarPlugin(core)
+    }
+}
 
 class QuasarPlugin(
     val addon: QuasarCoreAddon
@@ -91,4 +110,12 @@ class QuasarPlugin(
     fun finalizeAPIStartup() {
         RegistrationManager.reload()
     }
+}
+
+/**
+ * Core addon for Quasar, containing all built-in content.
+ */
+class QuasarCoreAddon : Addon<QuasarPlugin>() {
+    override val id   = "quasar"
+    override val name = "Quasar Core"
 }
