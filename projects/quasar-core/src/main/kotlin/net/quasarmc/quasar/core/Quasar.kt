@@ -16,6 +16,7 @@ import io.papermc.paper.plugin.bootstrap.PluginProviderContext
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import net.quasarmc.quasar.api.addon.AddonManager
 import net.quasarmc.quasar.api.addon.Addon
+import org.bukkit.event.server.PluginEnableEvent
 
 @Suppress("UnstableApiUsage")
 class QuasarPluginBootstrap : PluginBootstrap {
@@ -89,16 +90,14 @@ class QuasarPlugin(
             }
         }
 
-        // TODO: This should be handled by the core addon.
+        server.pluginManager.registerEvents(AddonManager, this)
         server.pluginManager.registerEvents(object : Listener {
+            // TODO: This should be handled by the core addon.
             @EventHandler
             fun onRegisterRegistries(ev: RegistryRegistrationEvent) {
                 ev.register("quasar", "root", CustomRegistryRegistry);
             }
         }, this)
-
-        // TODO: Wait until all addons are enabled and ready and then run this
-        finalizeAPIStartup();
     }
 
     /**
@@ -106,9 +105,13 @@ class QuasarPlugin(
      * as there's no startup event that runs after onEnable but before things we care about, like world loading.
      *
      * This *should* be called when all addons are ready to do things like setting up registries.
+     *
+     * The method gets called from [AddonManager.onPluginEnable]
      */
-    fun finalizeAPIStartup() {
+    internal fun finalizeAPIStartup() {
         RegistrationManager.reload()
+
+        AddonManager.finalizeInitialization();
     }
 }
 

@@ -1,5 +1,6 @@
 package net.quasarmc.quasar.api.addon
 
+import net.quasarmc.quasar.api.addon.exceptions.AddonLifecycleException
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -17,6 +18,11 @@ abstract class Addon<TPlugin : JavaPlugin> {
     abstract val name: String
 
     /**
+     * The state of the plugin.
+     */
+    var state: AddonState = AddonState.LOADED
+
+    /**
      * The plugin providing this addon. Only valid after the paper plugin loading phase.
      *
      * Initialized by [AddonManager.attachPlugin]
@@ -25,11 +31,15 @@ abstract class Addon<TPlugin : JavaPlugin> {
         private set;
 
     /**
-     * Attach an addons owning plugin to it. Should only be called by the owning plugin.
+     * Attach an addon's plugin to it. Should only be called by the providing plugin.
      *
-     * @param plugin The owning plugin
+     * @param plugin The providing plugin
      */
     fun attachPlugin(plugin: TPlugin) {
+        if (state != AddonState.LOADED)
+            throw AddonLifecycleException("Attempted to attach a second plugin to an addon.")
+
         this.plugin = plugin;
+        this.state = AddonState.PRE_INIT
     }
 }
