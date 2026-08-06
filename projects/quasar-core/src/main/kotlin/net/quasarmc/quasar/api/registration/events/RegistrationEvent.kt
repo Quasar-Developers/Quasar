@@ -1,6 +1,7 @@
 package net.quasarmc.quasar.api.registration.events
 
 import net.quasarmc.quasar.api.registration.ICustomRegistry
+import net.quasarmc.quasar.api.registration.IReloadableCustomRegistry
 import net.quasarmc.quasar.api.registration.registries.CustomRegistryRegistry
 import org.bukkit.NamespacedKey
 import org.bukkit.event.Event
@@ -11,7 +12,12 @@ import org.bukkit.event.HandlerList
  *
  * Addons that want to add new registry objects should handle this.
  */
-class RegistrationEvent : Event() {
+class RegistrationEvent(
+    /**
+     * If this event was fired as part of the Quasar API init and includes non-reloadable registries.
+     */
+    val init: Boolean = false
+) : Event() {
     private companion object {
         val HANDLER_LIST = HandlerList()
 
@@ -20,6 +26,23 @@ class RegistrationEvent : Event() {
     }
 
     override fun getHandlers(): HandlerList = HANDLER_LIST
+
+    /**
+     * Safely register to a registry
+     *
+     * @param registry The registry to register to
+     * @param lambda   Will be called with the requested registry
+     */
+    inline fun <reified TRegistry : ICustomRegistry<TValue>, TValue> register(
+        registry: TRegistry,
+        lambda: (registry: TRegistry) -> Unit
+    ) {
+        // Don't register if the registry isn't reloadable and we aren't in init
+        if (!init && registry !is IReloadableCustomRegistry<*>)
+            return
+
+        lambda(registry)
+    }
 
     /**
      * Get a writable registry for registration
@@ -32,7 +55,7 @@ class RegistrationEvent : Event() {
     inline fun <reified TRegistry : ICustomRegistry<TValue>, TValue> register(
         id: NamespacedKey,
         lambda: (registry: TRegistry) -> Unit
-    ) = lambda(CustomRegistryRegistry[id] as TRegistry);
+    ) = register(CustomRegistryRegistry[id] as TRegistry, lambda);
 
     /**
      * Get a writable registry for registration

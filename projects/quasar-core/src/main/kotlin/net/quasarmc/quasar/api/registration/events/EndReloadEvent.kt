@@ -6,7 +6,12 @@ import org.bukkit.event.HandlerList
 /**
  * Event signaling that the registry reload is complete and registries are now safe to access.
  */
-class EndReloadEvent : Event() {
+class EndReloadEvent(
+    /**
+     * If this event was fired as part of the Quasar API init and includes non-reloadable registries.
+     */
+    val init: Boolean = false
+) : Event() {
     private companion object {
         val HANDLER_LIST = HandlerList()
 

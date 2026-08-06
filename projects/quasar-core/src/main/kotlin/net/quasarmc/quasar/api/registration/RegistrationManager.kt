@@ -16,26 +16,33 @@ import org.bukkit.NamespacedKey
 object RegistrationManager {
     /**
      * Clear all registries and reload data.
+     *
+     * @param init If the reload is a API initialization reload. If true, non-reloadable registries will
+     *             also be reset. You shouldn't ever have to use this.
      */
-    fun reload() {
+    fun reload(init: Boolean = false) {
         QuasarPlugin.LOGGER.info("Reloading registries...")
 
-        BeginReloadEvent().callEvent()
+        BeginReloadEvent(init).callEvent()
 
         // purge registries
         for ((key, registry) in CustomRegistryRegistry) {
-            if (registry != CustomRegistryRegistry) registry.removeAll()
+            if (registry == CustomRegistryRegistry ||
+                !init && registry !is IReloadableCustomRegistry)
+                continue
+
+            registry.removeAll()
         }
         CustomRegistryRegistry.removeAll()
 
         // load new registries
-        RegistryRegistrationEvent().callEvent()
+        RegistryRegistrationEvent(init).callEvent()
 
         // load new registry data
-        RegistrationEvent().callEvent()
+        RegistrationEvent(init).callEvent()
 
         // registration done
-        EndReloadEvent().callEvent()
+        EndReloadEvent(init).callEvent()
 
         QuasarPlugin.LOGGER.info("Registry reload complete.")
     }

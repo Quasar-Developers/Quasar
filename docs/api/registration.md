@@ -29,6 +29,14 @@ In all cases, you will have to make the registry known to the Quasar API
 by handling the `RegistryRegistrationEvent` and registering your registry
 to the root registry.
 
+Registries do not participate in reloads initiated after the initial registry
+reload during the Quasar API startup unless they also implement the
+`IReloadableCustomRegistry` interface. If a registry does not implement the
+reloadable registry interface, you must check that the `init` field in the
+registration event is true before mutating it. `RegistrationEvent.register`
+automatically handles this for you, so prefer it over mutating registries
+directly.
+
 ## Adding Objects to Custom Registries
 
 Addons can add objects to custom registries through two means:

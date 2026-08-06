@@ -66,7 +66,7 @@ interface ICustomRegistry<TValue> : Iterable<Pair<NamespacedKey, TValue>> {
     /**
      * Remove all registered values from the registry.
      *
-     * Do not call this outside of RegistrationManager.
+     * Do not call this outside of [RegistrationManager].
      */
     fun removeAll();
 }

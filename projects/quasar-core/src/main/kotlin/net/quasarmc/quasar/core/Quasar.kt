@@ -16,6 +16,7 @@ import io.papermc.paper.plugin.bootstrap.PluginProviderContext
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import net.quasarmc.quasar.api.addon.AddonManager
 import net.quasarmc.quasar.api.addon.Addon
+import net.quasarmc.quasar.api.addon.registries.AddonRegistry
 import org.bukkit.NamespacedKey
 import org.bukkit.event.server.PluginEnableEvent
 
@@ -97,6 +98,7 @@ class QuasarPlugin(
             @EventHandler
             fun onRegisterRegistries(ev: RegistryRegistrationEvent) {
                 ev.register("quasar", "root", CustomRegistryRegistry);
+                ev.register("quasar", "addons", AddonRegistry)
             }
         }, this)
     }
