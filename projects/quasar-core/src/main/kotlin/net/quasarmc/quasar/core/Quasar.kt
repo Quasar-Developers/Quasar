@@ -16,6 +16,7 @@ import io.papermc.paper.plugin.bootstrap.PluginProviderContext
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import net.quasarmc.quasar.api.addon.AddonManager
 import net.quasarmc.quasar.api.addon.Addon
+import org.bukkit.NamespacedKey
 import org.bukkit.event.server.PluginEnableEvent
 
 @Suppress("UnstableApiUsage")
@@ -111,6 +112,7 @@ class QuasarPlugin(
     internal fun finalizeAPIStartup() {
         RegistrationManager.reload()
 
+        // TODO: Make this an event???
         AddonManager.finalizeInitialization();
     }
 }
@@ -119,6 +121,6 @@ class QuasarPlugin(
  * Core addon for Quasar, containing all built-in content.
  */
 class QuasarCoreAddon : Addon<QuasarPlugin>() {
-    override val id   = "quasar"
-    override val name = "Quasar Core"
+    override val identifier = NamespacedKey("quasar", "quasar.core")
+    override val name       = "Quasar Core"
 }

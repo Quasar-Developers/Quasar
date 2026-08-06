@@ -1,16 +1,24 @@
 package net.quasarmc.quasar.api.addon
 
 import net.quasarmc.quasar.api.addon.exceptions.AddonLifecycleException
+import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
- * Addon class for the Quasar API. See {QuasarCoreAddon} for an example on how to use it.
+ * Addon class for the Quasar API.
+ *
+ * @see net.quasarmc.quasar.core.QuasarCoreAddon
  */
 abstract class Addon<TPlugin : JavaPlugin> {
     /**
      * The unique ID of the addon. *Should* match the addon's resource/data namespace.
+     *
+     * The namespace should be the namespace of the providing plugin
+     * The path should be:
+     * - For a plugin providing a single addon, the plugin's namespace (quasar:quasar)
+     * - For a plugin providing multiple addons, plugin.addon_name (quasar:quasar.core, quasar:quasar.api)
      */
-    abstract val id: String
+    abstract val identifier: NamespacedKey
 
     /**
      * The name of the addon that is displayed to users.
@@ -25,7 +33,7 @@ abstract class Addon<TPlugin : JavaPlugin> {
     /**
      * The plugin providing this addon. Only valid after the paper plugin loading phase.
      *
-     * Initialized by [AddonManager.attachPlugin]
+     * Initialized by [attachPlugin]
      */
     lateinit var plugin: TPlugin
         private set;

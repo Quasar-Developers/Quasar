@@ -2,6 +2,7 @@ package net.quasarmc.quasar.api.addon
 
 import net.quasarmc.quasar.api.addon.exceptions.AddonRegistrationException
 import net.quasarmc.quasar.core.QuasarPlugin
+import org.bukkit.NamespacedKey
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.server.PluginEnableEvent
@@ -15,7 +16,7 @@ object AddonManager : Listener {
      *
      * TODO: Make this a registry?
      */
-    val addons = HashMap<String, Addon<*>>();
+    val addons = HashMap<NamespacedKey, Addon<*>>();
 
     /**
      * Addon registration is complete and no new addons can be registered.
@@ -32,10 +33,10 @@ object AddonManager : Listener {
         if (addonsFinalized)
             throw AddonRegistrationException("Attempted to register an addon after bootstrapping")
 
-        if (addons.contains(addon.id))
-            throw AddonRegistrationException("An addon with the id ${addon.id} has already been registered")
+        if (addons.contains(addon.identifier))
+            throw AddonRegistrationException("An addon with the id ${addon.identifier} has already been registered")
 
-        addons[addon.id] = addon
+        addons[addon.identifier] = addon
     }
 
     /**
