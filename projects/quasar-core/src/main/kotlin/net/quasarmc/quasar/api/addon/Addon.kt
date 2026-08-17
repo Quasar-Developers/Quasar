@@ -26,6 +26,26 @@ abstract class Addon<TPlugin : JavaPlugin> {
     abstract val name: String
 
     /**
+     * A short description of the addon.
+     */
+    abstract val description: String
+
+    /**
+     * The addon version.
+     */
+    abstract val version: String
+
+    /**
+     * The author or authors of the addon. Prefer "{ADDON} Authors" for free/open-source addons.
+     */
+    abstract val author: String
+
+    /**
+     * A link to the source code for the addon.
+     */
+    abstract val sourceURL: String
+
+    /**
      * The state of the plugin.
      */
     var state: AddonState = AddonState.LOADED

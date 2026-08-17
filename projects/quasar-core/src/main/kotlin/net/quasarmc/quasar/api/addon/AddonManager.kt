@@ -3,10 +3,14 @@ package net.quasarmc.quasar.api.addon
 import net.quasarmc.quasar.api.addon.exceptions.AddonRegistrationException
 import net.quasarmc.quasar.api.addon.registries.AddonRegistry
 import net.quasarmc.quasar.core.QuasarPlugin
+import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
+import org.bukkit.Server
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.server.PluginEnableEvent
+import org.bukkit.event.server.ServerLoadEvent
+import org.bukkit.event.world.WorldInitEvent
 
 /**
  * Central class to manage all Quasar API addons and their life-cycles.
@@ -64,5 +68,28 @@ object AddonManager : Listener {
         // This should probably get called in a more obvious location
         if (allReady)
             QuasarPlugin.plugin.finalizeAPIStartup()
+    }
+
+    @EventHandler
+    private fun onServerLoad(ev: ServerLoadEvent) {
+        // If for whatever reason the API did not finish setting up addons, crash the server. We could
+        // keep the server running, but we wouldn't be able to reset every registry, which could lead
+        // to more errors later down the line.
+        if (ev.type != ServerLoadEvent.LoadType.STARTUP || addonsFinalized)
+            return;
+
+        QuasarPlugin.LOGGER.severe("Addon initialization failed, some plugins are not working correctly!")
+        QuasarPlugin.LOGGER.severe("This is not an issue with Quasar, submit an issue to the problematic addons before submitting one to Quasar.")
+        QuasarPlugin.LOGGER.severe("Loaded plugins:")
+        for ((_, addon) in AddonRegistry) {
+            QuasarPlugin.LOGGER.severe("- ${addon.name} [${addon.version}] (${addon.identifier} from ${addon.plugin.name})")
+            QuasarPlugin.LOGGER.severe("| STATE: ${addon.state} ${
+                if (addon.state != AddonState.INIT && addon.state != AddonState.ACTIVE) { "(!!!)" } else { "" }
+            }")
+            QuasarPlugin.LOGGER.severe("| AUTHOR: ${addon.author}")
+            QuasarPlugin.LOGGER.severe("| SOURCE: ${addon.sourceURL}")
+        }
+
+        Bukkit.shutdown()
     }
 }

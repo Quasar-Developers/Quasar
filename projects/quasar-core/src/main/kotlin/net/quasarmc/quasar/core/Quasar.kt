@@ -115,6 +115,7 @@ class QuasarPlugin(
         RegistrationManager.reload()
 
         // TODO: Make this an event???
+        // This control flow is shit.
         AddonManager.finalizeInitialization();
     }
 }
@@ -123,6 +124,10 @@ class QuasarPlugin(
  * Core addon for Quasar, containing all built-in content.
  */
 class QuasarCoreAddon : Addon<QuasarPlugin>() {
-    override val identifier = NamespacedKey("quasar", "quasar.core")
-    override val name       = "Quasar Core"
+    override val identifier  = NamespacedKey("quasar", "quasar.core")
+    override val name        = "Quasar Core"
+    override val description = "Quasar core content"
+    override val author      = "Quasar Contributors"
+    override val version     = "v3.0.0.1"
+    override val sourceURL   = "https://github.com/Quasar-Developers/Quasar"
 }
