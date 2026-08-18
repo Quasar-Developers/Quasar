@@ -1,5 +1,5 @@
 name:        Quasar
-version:     3.0.0.1
+version:     ${version}
 website:     https://quasarmc.net
 description: The Quasar server plugin
 author:      Quasar Contributors (see GitHub)
