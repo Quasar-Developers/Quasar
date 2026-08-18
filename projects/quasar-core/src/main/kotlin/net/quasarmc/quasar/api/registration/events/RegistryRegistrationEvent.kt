@@ -12,7 +12,12 @@ import org.bukkit.event.HandlerList
  *
  * Addons that wish to add custom registries should handle this event.
  */
-class RegistryRegistrationEvent : Event() {
+class RegistryRegistrationEvent(
+    /**
+     * If this event was fired as part of the Quasar API init and includes non-reloadable registries.
+     */
+    val init: Boolean = false
+): Event() {
     private companion object {
         val HANDLER_LIST = HandlerList()
 

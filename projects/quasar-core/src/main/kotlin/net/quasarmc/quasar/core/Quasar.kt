@@ -1,42 +1,60 @@
-package net.quasarmc.quasar.api.plugin
+package net.quasarmc.quasar.core
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
-import net.quasarmc.quasar.api.addon.AddonManager
-import net.quasarmc.quasar.api.registration.CustomRegistry
-import net.quasarmc.quasar.api.registration.CustomResourceKey
-import net.quasarmc.quasar.api.registration.CustomResourcePointer
-import net.quasarmc.quasar.api.registration.HardcodedCustomResourcePointer
 import net.quasarmc.quasar.api.registration.RegistrationManager
-import net.quasarmc.quasar.api.registration.events.RegistrationEvent
 import net.quasarmc.quasar.api.registration.events.RegistryRegistrationEvent
 import net.quasarmc.quasar.api.registration.registries.CustomRegistryRegistry
-import net.quasarmc.quasar.core.QuasarCoreAddon
-import org.bukkit.NamespacedKey
-import org.bukkit.entity.Item
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
+import io.papermc.paper.plugin.bootstrap.BootstrapContext
+import io.papermc.paper.plugin.bootstrap.PluginBootstrap
+import io.papermc.paper.plugin.bootstrap.PluginProviderContext
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
+import net.quasarmc.quasar.api.addon.AddonManager
+import net.quasarmc.quasar.api.addon.Addon
+import net.quasarmc.quasar.api.addon.registries.AddonRegistry
+import org.bukkit.NamespacedKey
+import org.bukkit.event.server.PluginEnableEvent
 
-class QuasarPlugin : JavaPlugin() {
+@Suppress("UnstableApiUsage")
+class QuasarPluginBootstrap : PluginBootstrap {
+    /**
+     * The core addon for Quasar.
+     */
+    val core = QuasarCoreAddon();
+
+    override fun bootstrap(context: BootstrapContext) {
+        // add our datapack
+        context.lifecycleManager.registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY.newHandler {
+            it.registrar().discoverPack(this.javaClass.getResource("/datapack")!!.toURI(), "data");
+        })
+
+        // register the core addon
+        AddonManager.register(core)
+    }
+
+    override fun createPlugin(context: PluginProviderContext): JavaPlugin {
+        return QuasarPlugin(core)
+    }
+}
+
+class QuasarPlugin(
+    val addon: QuasarCoreAddon
+) : JavaPlugin() {
     companion object {
         lateinit var plugin: QuasarPlugin;
 
         val LOGGER get() = plugin.logger;
     };
 
-    /**
-     * Quasar core addon. This is the entry point to all core code.
-     */
-    private val addon = QuasarCoreAddon();
-
     override fun onLoad() {
         plugin = this;
 
-        // Register core addon
-        AddonManager.register(addon);
+        addon.attachPlugin(this)
     }
 
     override fun onEnable() {
@@ -74,16 +92,15 @@ class QuasarPlugin : JavaPlugin() {
             }
         }
 
-        // TODO: This should be handled by the core addon.
+        server.pluginManager.registerEvents(AddonManager, this)
         server.pluginManager.registerEvents(object : Listener {
+            // TODO: This should be handled by the core addon.
             @EventHandler
             fun onRegisterRegistries(ev: RegistryRegistrationEvent) {
                 ev.register("quasar", "root", CustomRegistryRegistry);
+                ev.register("quasar", "addons", AddonRegistry)
             }
         }, this)
-
-        // TODO: Wait until all addons are enabled and ready and then run this
-        finalizeAPIStartup();
     }
 
     /**
@@ -91,8 +108,26 @@ class QuasarPlugin : JavaPlugin() {
      * as there's no startup event that runs after onEnable but before things we care about, like world loading.
      *
      * This *should* be called when all addons are ready to do things like setting up registries.
+     *
+     * The method gets called from [AddonManager.onPluginEnable]
      */
-    fun finalizeAPIStartup() {
+    internal fun finalizeAPIStartup() {
         RegistrationManager.reload()
+
+        // TODO: Make this an event???
+        // This control flow is shit.
+        AddonManager.finalizeInitialization();
     }
+}
+
+/**
+ * Core addon for Quasar, containing all built-in content.
+ */
+class QuasarCoreAddon : Addon<QuasarPlugin>() {
+    override val identifier  = NamespacedKey("quasar", "quasar.core")
+    override val name        = "Quasar Core"
+    override val description = "Quasar core content"
+    override val author      = "Quasar Contributors"
+    override val version     = "v3.0.0.1"
+    override val sourceURL   = "https://github.com/Quasar-Developers/Quasar"
 }
