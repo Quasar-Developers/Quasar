@@ -17,6 +17,7 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import net.quasarmc.quasar.api.addon.AddonManager
 import net.quasarmc.quasar.api.addon.Addon
 import net.quasarmc.quasar.api.addon.registries.AddonRegistry
+import net.quasarmc.quasar.core.administration.commands.QuasarCommand
 import org.bukkit.NamespacedKey
 import org.bukkit.event.server.PluginEnableEvent
 
@@ -64,40 +65,6 @@ class QuasarPlugin(
         LOGGER.info(QuasarBuildMetadata.sourceURL)
         LOGGER.info("=================================================")
 
-        // TODO: This is bad, make this into a /quasar subcommand or something
-        registerCommand("quasar_version") { commandSourceStack, args ->
-            commandSourceStack.sender.sendMessage(
-                Component.textOfChildren(
-                    Component.text("Quasar ").color(TextColor.fromHexString("#38e5e4")),
-                    Component.text(QuasarBuildMetadata.version),
-                    Component.newline(),
-                    Component.text("Quasar is licensed under the GNU Affero General Public License 3.0, you " +
-                            "are free to modify and distribute it. You should have access to the source " +
-                            "code of the version running on this server, if a modified version of the plugin " +
-                            "is being hosted without sharing the source, please contact @xwashere or @corrstud " +
-                            "on Discord."),
-                    Component.newline(),
-                    Component.text("You can access an unmodified version of the plugin's code "),
-                    Component.text("here").clickEvent(ClickEvent.openUrl(QuasarBuildMetadata.sourceURL)),
-                    Component.text(".")
-                )
-            )
-        }
-
-        registerCommand("quasar_reload") { commandSourceStack, args ->
-            commandSourceStack.sender.sendMessage("Reloading!")
-            RegistrationManager.reload()
-            commandSourceStack.sender.sendMessage("Done... Dumping quasar:root:")
-
-            for ((id, registry) in CustomRegistryRegistry) {
-                commandSourceStack.sender.sendMessage(
-                    MiniMessage.miniMessage().deserialize(
-                        "L <#ff8080><bold>$id</bold> <yellow>-<reset> (${registry.count()} entries)"
-                    )
-                );
-            }
-        }
-
         server.pluginManager.registerEvents(AddonManager, this)
         server.pluginManager.registerEvents(object : Listener {
             // TODO: This should be handled by the core addon.
@@ -107,6 +74,12 @@ class QuasarPlugin(
                 ev.register("quasar", "addons", AddonRegistry)
             }
         }, this)
+
+        lifecycleManager.registerEventHandler(LifecycleEvents.COMMANDS) {
+            val registry = it.registrar();
+
+            registry.register(QuasarCommand.command)
+        }
     }
 
     /**
