@@ -58,12 +58,18 @@ class QuasarPlugin(
     }
 
     override fun onEnable() {
+        LOGGER.info("================== Q U A S A R ==================")
+        LOGGER.info("Quasar version ${QuasarBuildMetadata.version}")
+        LOGGER.info("Compiled from git commit ${QuasarBuildMetadata.commit}")
+        LOGGER.info(QuasarBuildMetadata.sourceURL)
+        LOGGER.info("=================================================")
+
         // TODO: This is bad, make this into a /quasar subcommand or something
         registerCommand("quasar_version") { commandSourceStack, args ->
             commandSourceStack.sender.sendMessage(
                 Component.textOfChildren(
                     Component.text("Quasar ").color(TextColor.fromHexString("#38e5e4")),
-                    Component.text("[VERSION]"),
+                    Component.text(QuasarBuildMetadata.version),
                     Component.newline(),
                     Component.text("Quasar is licensed under the GNU Affero General Public License 3.0, you " +
                             "are free to modify and distribute it. You should have access to the source " +
@@ -72,7 +78,7 @@ class QuasarPlugin(
                             "on Discord."),
                     Component.newline(),
                     Component.text("You can access an unmodified version of the plugin's code "),
-                    Component.text("here").clickEvent(ClickEvent.openUrl("https://quasarmc.net")),
+                    Component.text("here").clickEvent(ClickEvent.openUrl(QuasarBuildMetadata.sourceURL)),
                     Component.text(".")
                 )
             )
@@ -128,6 +134,6 @@ class QuasarCoreAddon : Addon<QuasarPlugin>() {
     override val name        = "Quasar Core"
     override val description = "Quasar core content"
     override val author      = "Quasar Contributors"
-    override val version     = "v3.0.0.1"
-    override val sourceURL   = "https://github.com/Quasar-Developers/Quasar"
+    override val version     = QuasarBuildMetadata.version
+    override val sourceURL   = QuasarBuildMetadata.sourceURL
 }

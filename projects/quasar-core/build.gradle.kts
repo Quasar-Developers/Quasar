@@ -1,3 +1,9 @@
+val buildMetaProperties = mapOf(
+    "version"   to "3.0.0.1",
+    "commit"    to providers.exec { commandLine("git", "describe", "--always", "--tags", "--abbrev=10", "--dirty") }.standardOutput.asText.get().trim(),
+    "sourceURL" to "https://github.com/Quasar-Developers/Quasar/"
+)
+
 plugins {
     kotlin("jvm")
 
@@ -21,11 +27,12 @@ sourceSets {
     main {
         kotlin {
             srcDir("src/main/kotlin/")
+            srcDir(layout.buildDirectory.dir("generated/processTemplates/kotlin"))
         }
 
         resources {
             srcDir("src/main/resources/")
-            srcDir(layout.buildDirectory.dir("generated/copyDataPack/resources"))
+            srcDir(layout.buildDirectory.dir("generated/copyDataPack/resources/"))
         }
     }
 }
@@ -51,6 +58,25 @@ tasks.processResources {
     dependsOn(copyDataPack)
 
     duplicatesStrategy = DuplicatesStrategy.WARN
+
+    filesMatching("paper-plugin.yml") {
+        expand(buildMetaProperties)
+    }
+}
+
+val processTemplates = tasks.register<Copy>("processTemplates") {
+    from("src/template")
+    into(layout.buildDirectory.dir("generated/processTemplates"))
+
+    expand(buildMetaProperties) {
+        escapeBackslash = false
+    }
+
+    outputs.upToDateWhen { false }
+}
+
+tasks.compileKotlin {
+    dependsOn(processTemplates)
 }
 
 // The data pack is kept out of the resource folder so that if we need to we can
