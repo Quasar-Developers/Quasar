@@ -16,7 +16,7 @@ open class SimpleCustomRegistry<TValue>(
      * The namespace to register hardcoded values into
      */
     val nativeNamespace: String
-) : CustomRegistry<TValue>() {
+) : CustomRegistry<TValue>(), IReloadableCustomRegistry<TValue> {
     private val loader = HardcodedCustomRegistryLoader<TValue>(identifier)
 
     /**
