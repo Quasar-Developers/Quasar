@@ -17,6 +17,8 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import net.quasarmc.quasar.api.addon.AddonManager
 import net.quasarmc.quasar.api.addon.Addon
 import net.quasarmc.quasar.api.addon.registries.AddonRegistry
+import net.quasarmc.quasar.api.item.commands.GiveCommand
+import net.quasarmc.quasar.api.item.registries.CustomItemRegistry
 import net.quasarmc.quasar.core.administration.commands.QuasarCommand
 import org.bukkit.NamespacedKey
 import org.bukkit.event.server.PluginEnableEvent
@@ -65,6 +67,7 @@ class QuasarPlugin(
         LOGGER.info(QuasarBuildMetadata.sourceURL)
         LOGGER.info("=================================================")
 
+        CustomItemRegistry.registerEventHandlers(this)
         server.pluginManager.registerEvents(AddonManager, this)
         server.pluginManager.registerEvents(object : Listener {
             // TODO: This should be handled by the core addon.
@@ -72,6 +75,7 @@ class QuasarPlugin(
             fun onRegisterRegistries(ev: RegistryRegistrationEvent) {
                 ev.register("quasar", "root", CustomRegistryRegistry);
                 ev.register("quasar", "addons", AddonRegistry)
+                ev.register("quasar", "items", CustomItemRegistry)
             }
         }, this)
 
@@ -79,6 +83,7 @@ class QuasarPlugin(
             val registry = it.registrar();
 
             registry.register(QuasarCommand.command)
+            registry.register(GiveCommand.command)
         }
     }
 

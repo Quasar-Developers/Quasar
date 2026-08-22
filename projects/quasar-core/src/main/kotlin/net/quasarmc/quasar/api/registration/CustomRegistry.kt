@@ -36,6 +36,14 @@ open class CustomRegistry<TValue> : ICustomRegistry<TValue> {
         return CustomRegistryIteratorLow();
     }
 
+    override fun keyIterator(): Iterator<NamespacedKey> {
+        return data.keys.iterator()
+    }
+
+    override fun valueIterator(): Iterator<TValue> {
+        return data.values.iterator()
+    }
+
     inner class CustomRegistryIteratorLow : Iterator<Pair<NamespacedKey, TValue>> {
         val iterator = data.iterator()
 

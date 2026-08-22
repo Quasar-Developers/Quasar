@@ -69,4 +69,14 @@ interface ICustomRegistry<TValue> : Iterable<Pair<NamespacedKey, TValue>> {
      * Do not call this outside of [RegistrationManager].
      */
     fun removeAll();
+
+    /**
+     * Iterate over the keys in the registry
+     */
+    fun keyIterator(): Iterator<NamespacedKey>
+
+    /**
+     * Iterate over the values in the registry
+     */
+    fun valueIterator(): Iterator<TValue>
 }
