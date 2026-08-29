@@ -10,7 +10,10 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import io.papermc.paper.command.brigadier.MessageComponentSerializer
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType
+import io.papermc.paper.datacomponent.DataComponentTypes
+import io.papermc.paper.registry.RegistryAccess
 import net.kyori.adventure.text.Component
+import net.quasarmc.quasar.api.isAtArgumentEnd
 import net.quasarmc.quasar.api.keyOf
 import net.quasarmc.quasar.api.registration.ICustomRegistry
 import net.quasarmc.quasar.core.QuasarPlugin
@@ -30,7 +33,7 @@ open abstract class BaseCustomNamespacedKeyArgument<TType : Any, TNative : Any>(
     /**
      * Parse the raw argument.
      */
-    abstract fun parseArgument(raw: String): TType
+    abstract fun parseArgument(reader: StringReader): TType
 
     /**
      * Parse an identifier.
@@ -38,16 +41,21 @@ open abstract class BaseCustomNamespacedKeyArgument<TType : Any, TNative : Any>(
      * @param raw              The string to parse
      * @param defaultNamespace The namespace to use if only a key is provided
      */
-    protected fun parseIdentifier(raw: String, defaultNamespace: String = this.defaultNamespace): ParseIdentifierResult {
-        val delim = raw.indexOf(':')
-        val end = raw.substring(delim + 1).indexOfFirst { !KEY_ACCEPTABLE.contains(it.lowercaseChar()) }
-                                                     .let { if (it == -1) { raw.length } else { it } }
+    protected fun parseIdentifier(reader: StringReader, defaultNamespace: String = this.defaultNamespace): ParseIdentifierResult {
+        val namespaceStart = reader.cursor
+        while (reader.canRead() && NAMESPACE_ACCEPTABLE.contains(reader.peek())) reader.read();
+        val namespace = reader.string.substring(namespaceStart, reader.cursor)
 
-        val namespace = if (delim != -1) { raw.substring(0, delim) } else { defaultNamespace }
-        val key = if (delim != -1) { raw.substring(delim + 1, end) } else { raw.substring(0, end) }
+        if (reader.isAtArgumentEnd() || reader.peek() != ':') {
+            return ParseIdentifierResult(keyOf(defaultNamespace, namespace), 0)
+        }
+        reader.read()
 
-        // we do no verification and rely entirely on brigadier :clueless:
-        return ParseIdentifierResult(keyOf(namespace, key), end)
+        val keyStart = reader.cursor
+        while (reader.canRead() && KEY_ACCEPTABLE.contains(reader.peek())) reader.read();
+        val key = reader.string.substring(keyStart, reader.cursor)
+
+        return ParseIdentifierResult(keyOf(namespace, key), reader.cursor)
     }
     protected data class ParseIdentifierResult(val identifier: NamespacedKey, val end: Int);
 
@@ -57,10 +65,10 @@ open abstract class BaseCustomNamespacedKeyArgument<TType : Any, TNative : Any>(
      * @param raw              The string to parse
      * @param defaultNamespace The namespace to use if only a key is provided
      */
-    protected fun parseIdentifierStrict(raw: String, defaultNamespace: String = this.defaultNamespace): NamespacedKey {
-        val (identifier, end) = parseIdentifier(raw, defaultNamespace)
-        if (end != raw.length)
-            throw ERROR_INVALID_KEY.create(identifier.key + raw.substring(end))
+    protected fun parseIdentifierStrict(reader: StringReader, defaultNamespace: String = this.defaultNamespace): NamespacedKey {
+        val (identifier, end) = parseIdentifier(reader, defaultNamespace)
+        if (!reader.isAtArgumentEnd())
+            throw ERROR_INVALID_KEY.create(identifier.key + reader.remaining)
 
         return identifier
     }
@@ -71,7 +79,7 @@ open abstract class BaseCustomNamespacedKeyArgument<TType : Any, TNative : Any>(
     ): CompletableFuture<Suggestions> {
         // this can throw an illegalargumentexception because brigadier doesnt validate this before we get it
         val key = try {
-            parseIdentifierStrict(builder.remainingLowerCase.substringBefore(' '), "")
+            parseIdentifierStrict(StringReader(builder.remainingLowerCase.substringBefore(' ')), "")
         } catch (ex: IllegalArgumentException) { return builder.buildFuture() }
 
         suggestRegistry(builder, registry, key)
@@ -122,10 +130,7 @@ open abstract class BaseCustomNamespacedKeyArgument<TType : Any, TNative : Any>(
     }
 
     override fun parse(reader: StringReader): TType {
-        val string = reader.remaining.substringBefore(' ')
-        reader.cursor += string.length
-
-        return parseArgument(string)
+        return parseArgument(reader)
     }
 
     companion object {

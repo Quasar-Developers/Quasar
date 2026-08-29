@@ -1,5 +1,6 @@
 package net.quasarmc.quasar.api.registration.commands.arguments
 
+import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes
 import net.quasarmc.quasar.api.registration.ICustomRegistry
@@ -13,5 +14,5 @@ class CustomNamespacedKeyArgument(
     defaultNamespace: String = "quasar.core"
 ) : BaseCustomNamespacedKeyArgument<NamespacedKey, NamespacedKey>(registry, defaultNamespace) {
     override fun getNativeType(): ArgumentType<NamespacedKey> = ArgumentTypes.namespacedKey()
-    override fun parseArgument(raw: String): NamespacedKey = parseIdentifierStrict(raw)
+    override fun parseArgument(reader: StringReader): NamespacedKey = parseIdentifierStrict(reader)
 }

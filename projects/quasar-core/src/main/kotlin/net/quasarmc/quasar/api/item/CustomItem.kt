@@ -13,59 +13,59 @@ open class CustomItem(baseMaterial: Material) {
      */
     val prototype = ItemStack.of(baseMaterial)
 
+    /**
+     * Builder for a custom item.
+     */
+    abstract class CustomItemBuilder<TSelf : CustomItem> {
         /**
-         * Builder for a custom item.
+         * The item instance being build
          */
-        abstract class CustomItemBuilder<TSelf : CustomItem> {
-            /**
-             * The item instance being build
-             */
-            abstract val item: TSelf;
+        abstract val item: TSelf;
 
-            /**
-             * Set a component on the item
-             *
-             * @param type The type of component to set
-             */
-            fun setComponent(type: DataComponentType.NonValued): CustomItemBuilder<TSelf> {
-                item.prototype.setData(type)
-                return this
-            }
-
-            /**
-             * Set a component on the item
-             *
-             * @param type The type of component to set
-             * @param data The component data
-             */
-            fun <TType : Any> setComponent(type: DataComponentType.Valued<TType>, data: TType): CustomItemBuilder<TSelf> {
-                item.prototype.setData(type, data)
-                return this
-            }
-
-            /**
-             * Remove a component from the item
-             *
-             * @param type The type of component to remove
-             */
-            fun removeComponent(type: DataComponentType): CustomItemBuilder<TSelf> {
-                item.prototype.unsetData(type)
-                return this
-            }
-
-            /**
-             * Return an instance of this item class.
-             */
-            fun build(): TSelf {
-                return item
-            }
+        /**
+         * Set a component on the item
+         *
+         * @param type The type of component to set
+         */
+        fun setComponent(type: DataComponentType.NonValued): CustomItemBuilder<TSelf> {
+            item.prototype.setData(type)
+            return this
         }
 
         /**
-         * Builder for base CustomItems.
+         * Set a component on the item
+         *
+         * @param type The type of component to set
+         * @param data The component data
          */
-        class Builder(baseMaterial: Material) : CustomItemBuilder<CustomItem>() {
-            override val item = CustomItem(baseMaterial)
+        fun <TType : Any> setComponent(type: DataComponentType.Valued<TType>, data: TType): CustomItemBuilder<TSelf> {
+            item.prototype.setData(type, data)
+            return this
         }
+
+        /**
+         * Remove a component from the item
+         *
+         * @param type The type of component to remove
+         */
+        fun removeComponent(type: DataComponentType): CustomItemBuilder<TSelf> {
+            item.prototype.unsetData(type)
+            return this
+        }
+
+        /**
+         * Return an instance of this item class.
+         */
+        fun build(): TSelf {
+            return item
+        }
+    }
+
+    /**
+     * Builder for base CustomItems.
+     */
+    class Builder(baseMaterial: Material) : CustomItemBuilder<CustomItem>() {
+        override val item = CustomItem(baseMaterial)
+    }
 }
 
