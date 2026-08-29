@@ -32,6 +32,10 @@ open class CustomRegistry<TValue> : ICustomRegistry<TValue> {
         data.clear()
     }
 
+    override fun contains(key: NamespacedKey): Boolean {
+        return data.contains(key)
+    }
+
     override fun iterator(): Iterator<Pair<NamespacedKey, TValue>> {
         return CustomRegistryIteratorLow();
     }

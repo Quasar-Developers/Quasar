@@ -71,6 +71,13 @@ interface ICustomRegistry<TValue> : Iterable<Pair<NamespacedKey, TValue>> {
     fun removeAll();
 
     /**
+     * Check if the registry contains a value with the specified key
+     *
+     * @param key The key to check for
+     */
+    fun contains(key: NamespacedKey): Boolean
+
+    /**
      * Iterate over the keys in the registry
      */
     fun keyIterator(): Iterator<NamespacedKey>
