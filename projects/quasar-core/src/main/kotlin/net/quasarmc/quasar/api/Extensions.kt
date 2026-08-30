@@ -25,3 +25,8 @@ fun StringReader.isAtArgumentEnd(): Boolean = !this.canRead() || this.peek() == 
  * Convert a NMS namespaced key to a Bukkit namespaced key
  */
 fun Identifier.toBukkitKey(): NamespacedKey = NamespacedKey(this.namespace, this.path)
+
+/**
+ * Convert a Bukkit namespaced key to a NMS namespaced key
+ */
+fun NamespacedKey.toNMSKey(): Identifier = Identifier.fromNamespaceAndPath(this.namespace, this.key)
