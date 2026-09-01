@@ -1,13 +1,22 @@
 package net.quasarmc.quasar.api.item
 
 import io.papermc.paper.datacomponent.DataComponentType
+import net.quasarmc.quasar.api.keyOf
+import net.quasarmc.quasar.api.util.component.CustomComponentMap
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
 /**
  * A custom item singleton.
  */
-open class CustomItem(baseMaterial: Material) {
+open class CustomItem(
+    baseMaterial: Material,
+
+    /**
+     * The behavior components on the item.
+     */
+    private val behavior: CustomComponentMap<CustomItemBehaviorType<Any>, Any>
+) {
     /**
      * The vanilla item that represents this item.
      */
@@ -16,11 +25,9 @@ open class CustomItem(baseMaterial: Material) {
     /**
      * Builder for a custom item.
      */
-    abstract class CustomItemBuilder<TSelf : CustomItem> {
-        /**
-         * The item instance being build
-         */
-        abstract val item: TSelf;
+    abstract class CustomItemBuilder<TSelf : CustomItem>(val material: Material) {
+        val addedComponents   = HashMap<DataComponentType, Any>()
+        val removedComponents = HashSet<DataComponentType>()
 
         /**
          * Set a component on the item
@@ -28,7 +35,8 @@ open class CustomItem(baseMaterial: Material) {
          * @param type The type of component to set
          */
         fun setComponent(type: DataComponentType.NonValued): CustomItemBuilder<TSelf> {
-            item.prototype.setData(type)
+            addedComponents[type] = Unit
+            removedComponents.remove(type)
             return this
         }
 
@@ -39,7 +47,8 @@ open class CustomItem(baseMaterial: Material) {
          * @param data The component data
          */
         fun <TType : Any> setComponent(type: DataComponentType.Valued<TType>, data: TType): CustomItemBuilder<TSelf> {
-            item.prototype.setData(type, data)
+            addedComponents[type] = data
+            removedComponents.remove(type)
             return this
         }
 
@@ -49,23 +58,44 @@ open class CustomItem(baseMaterial: Material) {
          * @param type The type of component to remove
          */
         fun removeComponent(type: DataComponentType): CustomItemBuilder<TSelf> {
-            item.prototype.unsetData(type)
+            addedComponents.remove(type)
+            removedComponents.add(type)
             return this
         }
 
         /**
          * Return an instance of this item class.
          */
-        fun build(): TSelf {
-            return item
+        abstract fun build(): TSelf
+
+        /**
+         * Apply the prototype patches specified by [addedComponents] and [removedComponents].
+         *
+         * Call this in [build]
+         */
+        protected fun patchPrototype(prototype: ItemStack) {
+            for (comp in removedComponents)
+                prototype.unsetData(comp)
+
+            for ((comp, data) in addedComponents) {
+                when (comp) {
+                    is DataComponentType.NonValued -> prototype.setData(comp)
+                    // TYPE SAFETY: Type checked by compiler in addComponent
+                    is DataComponentType.Valued<*> -> prototype.setData(comp as DataComponentType.Valued<Any>, data)
+                }
+            }
         }
     }
 
     /**
      * Builder for base CustomItems.
      */
-    class Builder(baseMaterial: Material) : CustomItemBuilder<CustomItem>() {
-        override val item = CustomItem(baseMaterial)
+    class Builder(baseMaterial: Material) : CustomItemBuilder<CustomItem>(baseMaterial) {
+        override fun build(): CustomItem {
+            val item = CustomItem(material, CustomComponentMap(HashMap()))
+            patchPrototype(item.prototype)
+            return item
+        }
     }
 }
 
