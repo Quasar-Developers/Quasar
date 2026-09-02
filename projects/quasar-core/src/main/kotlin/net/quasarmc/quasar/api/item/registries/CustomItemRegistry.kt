@@ -10,6 +10,7 @@ import net.quasarmc.quasar.api.item.CustomItem
 import net.quasarmc.quasar.api.item.CustomItemBehaviorType
 import net.quasarmc.quasar.api.keyOf
 import net.quasarmc.quasar.api.registration.SimpleCustomRegistry
+import net.quasarmc.quasar.api.registration.registries.CustomRegistryRegistry
 import org.bukkit.Material
 import org.bukkit.MusicInstrument
 import org.bukkit.attribute.Attribute
@@ -53,9 +54,15 @@ object CustomItemRegistry : SimpleCustomRegistry<CustomItem>(keyOf("quasar", "it
                     .soundEvent { it.empty().fixedRange(20f).location(SoundEventKeys.ENTITY_WARDEN_SONIC_BOOM) }
                     .range(20f)})
             .setComponent(DataComponentTypes.WEAPON, Weapon.weapon().build())
-            .setBehavior(CustomItemBehaviorType<Unit>(keyOf("", "")))
-            .setBehavior(CustomItemBehaviorType<Float>(keyOf("", "")), 2f)
-            .removeBehavior(CustomItemBehaviorType<Unit>(keyOf("", "")))
+            .setBehavior(CustomItemBehaviorTypeRegistry.DEBUG_INTEGER, 67)
+            .setBehavior(CustomItemBehaviorTypeRegistry.DEBUG_NUMBER, 0.123251)
+            .setBehavior(CustomItemBehaviorTypeRegistry.DEBUG_INTEGER, 61)
+            .setBehavior(CustomItemBehaviorTypeRegistry.DEBUG_CUSTOM_DATA, mapOf(
+                keyOf("quasar", "test") to "this is a test",
+                keyOf("quasar", "test_2") to "this is also a test",
+                keyOf("quasar", "registries") to CustomRegistryRegistry
+            ))
+            .removeBehavior(CustomItemBehaviorTypeRegistry.DEBUG_INTEGER)
             .build()
     }
 }
