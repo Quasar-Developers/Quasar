@@ -1,6 +1,7 @@
 package net.quasarmc.quasar.api.item
 
 import io.papermc.paper.datacomponent.DataComponentType
+import net.quasarmc.quasar.api.registration.CustomResourcePointer
 import net.quasarmc.quasar.api.util.component.CustomComponentMap
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -20,6 +21,45 @@ open class CustomItem(
      * The vanilla item that represents this item.
      */
     val prototype = ItemStack.of(baseMaterial)
+
+    /**
+     * Get a behavior component
+     *
+     * @param type The component type to get
+     * @return The component if present, null otherwise
+     */
+    fun <TType : Any> getBehaviorOrNull(type: CustomItemBehaviorType<TType>): TType?
+        = behavior.getOrNull(type)
+
+    /**
+     * Get a behavior component
+     *
+     * @param type The component type to get
+     * @return The component if present, null otherwise
+     */
+    fun <TType : Any> getBehaviorOrNull(type: CustomResourcePointer<CustomItemBehaviorType<TType>>): TType?
+        = getBehaviorOrNull(type.get())
+
+    /**
+     * Get a behavior component
+     *
+     * @param type The component type to get
+     * @return The component
+     * @throws NoSuchElementException The component is not present on the item
+     */
+    fun <TType : Any> getBehavior(type: CustomItemBehaviorType<TType>): TType
+        = getBehaviorOrNull(type)
+       ?: throw NoSuchElementException("The behavior component \"$type\" is not present on the item.")
+
+    /**
+     * Get a behavior component
+     *
+     * @param type The component type to get
+     * @return The component
+     * @throws NoSuchElementException The component is not present on the item
+     */
+    fun <TType : Any> getBehavior(type: CustomResourcePointer<CustomItemBehaviorType<TType>>): TType
+        = getBehavior(type.get())
 
     /**
      * Builder for a custom item.
@@ -73,6 +113,15 @@ open class CustomItem(
             = this.apply { this.behavior.set(type, value) }
 
         /**
+         * Add a behavior component to the item
+         *
+         * @param type  The type of component to add
+         * @param value The value of the component
+         */
+        fun <TType : Any> setBehavior(type: CustomResourcePointer<CustomItemBehaviorType<TType>>, value: TType): CustomItemBuilder<TSelf>
+            = setBehavior(type.get(), value)
+
+        /**
          * Add a valueless behavior component to the item
          *
          * @param type The type of component to add
@@ -81,12 +130,28 @@ open class CustomItem(
             = setBehavior(type, Unit)
 
         /**
+         * Add a valueless behavior component to the item
+         *
+         * @param type The type of component to add
+         */
+        fun setBehavior(type: CustomResourcePointer<CustomItemBehaviorType<Unit>>): CustomItemBuilder<TSelf>
+            = setBehavior(type.get())
+
+        /**
          * Remove a behavior component from the item
          *
          * @param type The type of component to remove
          */
         fun <TType : Any> removeBehavior(type: CustomItemBehaviorType<TType>): CustomItemBuilder<TSelf>
             = this.apply { this.behavior.remove(type) }
+
+        /**
+         * Remove a behavior component from the item
+         *
+         * @param type The type of component to remove
+         */
+        fun <TType : Any> removeBehavior(type: CustomResourcePointer<CustomItemBehaviorType<TType>>): CustomItemBuilder<TSelf>
+            = removeBehavior(type.get())
 
         /**
          * Return an instance of this item class.

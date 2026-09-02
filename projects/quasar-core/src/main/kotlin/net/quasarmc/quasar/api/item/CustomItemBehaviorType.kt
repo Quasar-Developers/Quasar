@@ -8,7 +8,7 @@ import org.bukkit.NamespacedKey
  * a type of custom item. Behavior components are immutable and cannot change after an item is
  * registered.
  */
-class CustomItemBehaviorType<TValue>(
+class CustomItemBehaviorType<out TValue>(
     val identifier: NamespacedKey,
 ) : ICustomComponentType<CustomItemBehaviorType<Any>, TValue> {
     override fun toString() = "CustomItemBehaviorType[$identifier]"
