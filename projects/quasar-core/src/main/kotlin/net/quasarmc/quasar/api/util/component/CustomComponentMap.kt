@@ -1,5 +1,8 @@
 package net.quasarmc.quasar.api.util.component
 
+import net.quasarmc.quasar.api.item.CustomItemBehaviorType
+import net.quasarmc.quasar.api.keyOf
+
 /**
  * An immutable map of component types to component data.
  *
@@ -37,7 +40,43 @@ data class CustomComponentMap<TComponentType : ICustomComponentType<TComponentTy
      * @throws NoSuchElementException The component was not found.
      */
     operator fun <TType, TValue> get(type: TType): TValue
-        where TType : ICustomComponentType<TComponentType, TValue>,
+        where TType  : ICustomComponentType<TComponentType, TValue>,
               TValue : TBaseValue
         = getOrNull(type) ?: throw NoSuchElementException("No component of type \"${type}\".")
+
+    class Builder<TComponentType : ICustomComponentType<TComponentType, TBaseValue>, TBaseValue>(
+        private val components: HashMap<ICustomComponentType<TComponentType, TBaseValue>, TBaseValue> = HashMap()
+    ) {
+        /**
+         * Set a value on the map
+         *
+         * @param TType  The component type to set
+         * @param TValue The data type of the component
+         * @param type   The component type to set
+         * @param value  The value to set the component to
+         */
+        fun <TType, TValue> set(type: TType, value: TValue): Builder<TComponentType, TBaseValue>
+            where TType  : ICustomComponentType<TComponentType, TValue>,
+                  TValue : TBaseValue
+            = this.apply { this.components[type] = value }
+
+        /**
+         * Removes a value from the map
+         *
+         * @param TType  The component type to remove
+         * @param TValue The data type of the component to remove
+         * @param type   The component type to remove
+         */
+        fun <TType, TValue> remove(type: TType): Builder<TComponentType, TBaseValue>
+            where TType  : ICustomComponentType<TComponentType, TValue>,
+                  TValue : TBaseValue
+            = this.apply { this.components.remove(type) }
+
+        /**
+         * Construct the component map
+         */
+        fun build(): CustomComponentMap<TComponentType, TBaseValue> {
+            return CustomComponentMap(components);
+        }
+    }
 }
