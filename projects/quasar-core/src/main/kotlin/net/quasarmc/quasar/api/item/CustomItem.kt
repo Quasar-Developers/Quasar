@@ -1,7 +1,6 @@
 package net.quasarmc.quasar.api.item
 
 import io.papermc.paper.datacomponent.DataComponentType
-import net.quasarmc.quasar.api.keyOf
 import net.quasarmc.quasar.api.util.component.CustomComponentMap
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
