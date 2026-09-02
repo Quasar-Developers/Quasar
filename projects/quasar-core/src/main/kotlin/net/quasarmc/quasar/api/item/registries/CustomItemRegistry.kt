@@ -7,6 +7,7 @@ import io.papermc.paper.datacomponent.item.Weapon
 import io.papermc.paper.registry.keys.SoundEventKeys
 import net.quasarmc.quasar.api.createFormatted
 import net.quasarmc.quasar.api.item.CustomItem
+import net.quasarmc.quasar.api.item.CustomItemBehaviorType
 import net.quasarmc.quasar.api.keyOf
 import net.quasarmc.quasar.api.registration.SimpleCustomRegistry
 import org.bukkit.Material
@@ -52,6 +53,9 @@ object CustomItemRegistry : SimpleCustomRegistry<CustomItem>(keyOf("quasar", "it
                     .soundEvent { it.empty().fixedRange(20f).location(SoundEventKeys.ENTITY_WARDEN_SONIC_BOOM) }
                     .range(20f)})
             .setComponent(DataComponentTypes.WEAPON, Weapon.weapon().build())
+            .setBehavior(CustomItemBehaviorType<Unit>(keyOf("", "")))
+            .setBehavior(CustomItemBehaviorType<Float>(keyOf("", "")), 2f)
+            .removeBehavior(CustomItemBehaviorType<Unit>(keyOf("", "")))
             .build()
     }
 }

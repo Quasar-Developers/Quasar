@@ -24,9 +24,10 @@ open class CustomItem(
     /**
      * Builder for a custom item.
      */
-    abstract class CustomItemBuilder<TSelf : CustomItem>(val material: Material) {
-        val addedComponents   = HashMap<DataComponentType, Any>()
-        val removedComponents = HashSet<DataComponentType>()
+    abstract class CustomItemBuilder<TSelf : CustomItem>(protected val material: Material) {
+        protected val addedComponents   = HashMap<DataComponentType, Any>()
+        protected val removedComponents = HashSet<DataComponentType>()
+        protected val behavior = CustomComponentMap.Builder<CustomItemBehaviorType<Any>, Any>()
 
         /**
          * Set a component on the item
@@ -63,6 +64,31 @@ open class CustomItem(
         }
 
         /**
+         * Add a behavior component to the item
+         *
+         * @param type  The type of component to add
+         * @param value The value of the component
+         */
+        fun <TType : Any> setBehavior(type: CustomItemBehaviorType<TType>, value: TType): CustomItemBuilder<TSelf>
+            = this.apply { this.behavior.set(type, value) }
+
+        /**
+         * Add a valueless behavior component to the item
+         *
+         * @param type The type of component to add
+         */
+        fun setBehavior(type: CustomItemBehaviorType<Unit>): CustomItemBuilder<TSelf>
+            = setBehavior(type, Unit)
+
+        /**
+         * Remove a behavior component from the item
+         *
+         * @param type The type of component to remove
+         */
+        fun <TType : Any> removeBehavior(type: CustomItemBehaviorType<TType>): CustomItemBuilder<TSelf>
+            = this.apply { this.behavior.remove(type) }
+
+        /**
          * Return an instance of this item class.
          */
         abstract fun build(): TSelf
@@ -72,7 +98,7 @@ open class CustomItem(
          *
          * Call this in [build]
          */
-        protected fun patchPrototype(prototype: ItemStack) {
+        protected fun buildPrototype(prototype: ItemStack) {
             for (comp in removedComponents)
                 prototype.unsetData(comp)
 
@@ -91,8 +117,10 @@ open class CustomItem(
      */
     class Builder(baseMaterial: Material) : CustomItemBuilder<CustomItem>(baseMaterial) {
         override fun build(): CustomItem {
-            val item = CustomItem(material, CustomComponentMap(HashMap()))
-            patchPrototype(item.prototype)
+            val item = CustomItem(material, this.behavior.build())
+
+            buildPrototype(item.prototype)
+
             return item
         }
     }
