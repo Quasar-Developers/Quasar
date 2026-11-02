@@ -25,13 +25,6 @@ links to the repositories for any plugins that you use, and a link to the versio
 and Minecraft that your server is running. Providing version info for all code your server
 is running can help players find the right version of the source code.
 
-### Exception: ERD (`projects/ERD`)
-
-Quasar uses Katee8948's pipe and multiblock library, ERD, as a backend for the Quasar API.
-ERD is licensed under the permissive MIT license (`projects/ERD/LICENSES/MIT.txt`), In order to
-simplify licensing and to contribute back to the library, all changes that Quasar makes to ERD
-are also licensed under the MIT license instead of the AGPL.
-
 ## Asset Licensing (all resource files)
 
 Most of Quasar's resources are licensed under variations of the Creative Commons 4.0
