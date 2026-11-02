@@ -22,8 +22,8 @@ import org.bukkit.NamespacedKey
  *
  * Registered in QuasarPlugin
  */
-object QuasarCommand {
-    val command: LiteralCommandNode<CommandSourceStack> = Commands.literal("quasar")
+object QuasarCommand: CommandObject() {
+    override val command: LiteralCommandNode<CommandSourceStack> = Commands.literal("quasar")
         .then(Commands.literal("version").executes(QuasarCommand::version))
         .then(Commands.literal("addon")
             .then(Commands.literal("list").executes(QuasarCommand::addonList))

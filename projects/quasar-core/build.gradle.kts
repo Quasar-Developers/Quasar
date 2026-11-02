@@ -21,7 +21,7 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    paperweight.paperDevBundle("26.2.build.+")
+    paperweight.paperDevBundle("26.3.build.+")
 }
 
 sourceSets {
@@ -47,7 +47,7 @@ tasks.build {
 }
 
 tasks.runServer {
-    minecraftVersion("26.2")
+    minecraftVersion("26.3")
 
     // if running on a jvm with dcevm support, enable it
     if (rootProject.ext["jvmSupportsDCEVM"] as Boolean) {

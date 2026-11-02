@@ -17,6 +17,7 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import net.quasarmc.quasar.api.addon.AddonManager
 import net.quasarmc.quasar.api.addon.Addon
 import net.quasarmc.quasar.api.addon.registries.AddonRegistry
+import net.quasarmc.quasar.core.administration.commands.CommandObject
 import net.quasarmc.quasar.core.administration.commands.QuasarCommand
 import org.bukkit.NamespacedKey
 import org.bukkit.event.server.PluginEnableEvent
@@ -78,7 +79,8 @@ class QuasarPlugin(
         lifecycleManager.registerEventHandler(LifecycleEvents.COMMANDS) {
             val registry = it.registrar();
 
-            registry.register(QuasarCommand.command)
+            CommandObject.registerCommands(registry)
+            // registry.register(QuasarCommand.command)
         }
     }
 
