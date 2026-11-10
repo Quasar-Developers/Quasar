@@ -13,13 +13,14 @@ import net.quasarmc.quasar.api.registration.SimpleCustomRegistry
 import net.quasarmc.quasar.api.registration.registries.CustomRegistryRegistry
 import org.bukkit.Material
 import org.bukkit.MusicInstrument
+import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.inventory.ItemRarity
 
 object CustomItemRegistry : SimpleCustomRegistry<CustomItem>(keyOf("quasar", "items"), "quasar.core") {
     val DEBUG_ITEM = registerHardcoded("debug_item") {
-        CustomItem.Builder(Material.POISONOUS_POTATO)
+        CustomItem.Builder(keyOf("quasar.core", "debug_item"), Material.POISONOUS_POTATO)
             .setComponent(DataComponentTypes.ITEM_MODEL, keyOf("quasar", "debug"))
             .setComponent(DataComponentTypes.ITEM_NAME, createFormatted("debug item"))
             .setComponent(DataComponentTypes.LORE, ItemLore.lore(listOf(createFormatted("<red>You shouldn't have this!!!</red>"))))
@@ -31,7 +32,7 @@ object CustomItemRegistry : SimpleCustomRegistry<CustomItem>(keyOf("quasar", "it
     }
 
     val VIRTUAL_SIN_FORGIVENESS = registerHardcoded("virtual_sin_forgiveness") {
-        CustomItem.Builder(Material.GOAT_HORN)
+        CustomItem.Builder(keyOf("quasar.core", "virtual_sin_forgiveness"), Material.GOAT_HORN)
             .setComponent(DataComponentTypes.ITEM_MODEL, keyOf("quasar", "beam"))
             .setComponent(DataComponentTypes.ITEM_NAME, createFormatted("Virtual Sin Forgiveness"))
             .setComponent(DataComponentTypes.CUSTOM_NAME, createFormatted("<!i><b><c:white><shadow:green>Virtual Sin Forgiveness</shadow></c></b></!i>"))

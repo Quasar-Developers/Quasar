@@ -29,7 +29,7 @@ class CustomItemStackArgument(
         val (key, keyEnd) = parseIdentifier(reader, defaultNamespace)
 
         val item = vanillaItemRegistry.get(key)?.createItemStack()
-                ?: CustomItemRegistry.getOrNull(key)?.prototype?.clone()
+                ?: CustomItemRegistry.getOrNull(key)?.create()
         if (item == null)
             throw ERROR_NOT_FOUND.createWithContext(reader, key)
 

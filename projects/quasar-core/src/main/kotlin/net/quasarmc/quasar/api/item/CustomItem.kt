@@ -1,27 +1,34 @@
 package net.quasarmc.quasar.api.item
 
 import io.papermc.paper.datacomponent.DataComponentType
+import net.quasarmc.quasar.api.keyOf
 import net.quasarmc.quasar.api.registration.CustomResourcePointer
 import net.quasarmc.quasar.api.util.component.CustomComponentMap
+import net.quasarmc.quasar.core.QuasarCoreAddon
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 
 /**
  * A custom item singleton.
  */
 open class CustomItem(
-    baseMaterial: Material,
+    /**
+     * The identifier used to reference this item
+     */
+    val identifier: NamespacedKey,
+
+    /**
+     * The vanilla item that represents this item.
+     */
+    protected val prototype: ItemStack,
 
     /**
      * The behavior components on the item.
      */
     private val behavior: CustomComponentMap<CustomItemBehaviorType<Any>, Any>
 ) {
-    /**
-     * The vanilla item that represents this item.
-     */
-    val prototype = ItemStack.of(baseMaterial)
-
     /**
      * Get a behavior component
      *
@@ -44,7 +51,6 @@ open class CustomItem(
      * Get a behavior component
      *
      * @param type The component type to get
-     * @return The component
      * @throws NoSuchElementException The component is not present on the item
      */
     fun <TType : Any> getBehavior(type: CustomItemBehaviorType<TType>): TType
@@ -55,17 +61,31 @@ open class CustomItem(
      * Get a behavior component
      *
      * @param type The component type to get
-     * @return The component
      * @throws NoSuchElementException The component is not present on the item
      */
     fun <TType : Any> getBehavior(type: CustomResourcePointer<CustomItemBehaviorType<TType>>): TType
         = getBehavior(type.get())
 
     /**
+     * Create an ItemStack representing this item
+     */
+    open fun create(): ItemStack = prototype.clone()
+
+    companion object {
+        /**
+         * The key used to store the item identifier in an item's PDC
+         */
+        val PDC_IDENTIFIER_KEY = keyOf("quasar.api", "identifier")
+    }
+
+    /**
      * Builder for a custom item.
      */
-    abstract class CustomItemBuilder<TSelf : CustomItem>(protected val material: Material) {
-        protected val addedComponents   = HashMap<DataComponentType, Any>()
+    abstract class CustomItemBuilder<TSelf : CustomItem>(
+        protected val identifier: NamespacedKey,
+        protected val material: Material
+    ) {
+        protected val addedComponents = HashMap<DataComponentType, Any>()
         protected val removedComponents = HashSet<DataComponentType>()
         protected val behavior = CustomComponentMap.Builder<CustomItemBehaviorType<Any>, Any>()
 
@@ -155,36 +175,44 @@ open class CustomItem(
 
         /**
          * Return an instance of this item class.
+         *
+         * Prefer [augment] when applying properties to the item.
          */
         abstract fun build(): TSelf
 
         /**
-         * Apply the prototype patches specified by [addedComponents] and [removedComponents].
+         * Apply the collected properties to the custom item.
          *
-         * Call this in [build]
+         * Call this in inheriting [build] methods
          */
-        protected fun buildPrototype(prototype: ItemStack) {
+        open fun augment(item: TSelf): TSelf {
             for (comp in removedComponents)
-                prototype.unsetData(comp)
+                item.prototype.unsetData(comp)
 
             for ((comp, data) in addedComponents) {
                 when (comp) {
-                    is DataComponentType.NonValued -> prototype.setData(comp)
+                    is DataComponentType.NonValued -> item.prototype.setData(comp)
                     // TYPE SAFETY: Type checked by compiler in addComponent
-                    is DataComponentType.Valued<*> -> prototype.setData(comp as DataComponentType.Valued<Any>, data)
+                    is DataComponentType.Valued<*> -> item.prototype.setData(comp as DataComponentType.Valued<Any>, data)
                 }
             }
+
+            item.prototype.editPersistentDataContainer {
+                it.set(PDC_IDENTIFIER_KEY, PersistentDataType.STRING, identifier.toString())
+            }
+
+            return item
         }
     }
 
     /**
      * Builder for base CustomItems.
      */
-    class Builder(baseMaterial: Material) : CustomItemBuilder<CustomItem>(baseMaterial) {
+    class Builder(identifier: NamespacedKey, material: Material) : CustomItemBuilder<CustomItem>(identifier, material) {
         override fun build(): CustomItem {
-            val item = CustomItem(material, this.behavior.build())
+            val item = CustomItem(identifier, ItemStack.of(this.material), this.behavior.build())
 
-            buildPrototype(item.prototype)
+            augment(item)
 
             return item
         }
