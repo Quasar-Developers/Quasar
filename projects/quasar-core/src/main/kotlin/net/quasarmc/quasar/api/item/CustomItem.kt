@@ -8,6 +8,7 @@ import net.quasarmc.quasar.api.util.component.CustomComponentMap
 import net.quasarmc.quasar.core.QuasarCoreAddon
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -79,6 +80,11 @@ open class CustomItem(
      * Item is guaranteed to be non-null
      */
     open fun onInteract(ev: PlayerInteractEvent) {}
+
+    /**
+     * Called when this item receives a PlayerInteractEntityEvent
+     */
+    open fun onInteractEntity(ev: PlayerInteractEntityEvent) {}
 
     companion object {
         /**

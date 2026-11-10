@@ -11,6 +11,7 @@ import net.quasarmc.quasar.api.item.CustomItemBehaviorType
 import net.quasarmc.quasar.api.keyOf
 import net.quasarmc.quasar.api.registration.SimpleCustomRegistry
 import net.quasarmc.quasar.api.registration.registries.CustomRegistryRegistry
+import net.quasarmc.quasar.core.administration.commands.items.AdminEraseEntityItem
 import org.bukkit.Material
 import org.bukkit.MusicInstrument
 import org.bukkit.NamespacedKey
@@ -32,10 +33,15 @@ object CustomItemRegistry : SimpleCustomRegistry<CustomItem>(keyOf("quasar", "it
     }
 
     val VIRTUAL_SIN_FORGIVENESS = registerHardcoded("virtual_sin_forgiveness") {
-        CustomItem.Builder(keyOf("quasar.core", "virtual_sin_forgiveness"), Material.GOAT_HORN)
+        AdminEraseEntityItem.Builder(keyOf("quasar.core", "virtual_sin_forgiveness"), Material.POISONOUS_POTATO)
+            .deleteInventory(false)
+            .deleteLoot(false)
+            .sound(SoundEventKeys.ENTITY_WARDEN_SONIC_BOOM.key())
+            .spawnParticles(true)
             .setComponent(DataComponentTypes.ITEM_MODEL, keyOf("quasar", "beam"))
             .setComponent(DataComponentTypes.ITEM_NAME, createFormatted("Virtual Sin Forgiveness"))
             .setComponent(DataComponentTypes.CUSTOM_NAME, createFormatted("<!i><b><c:white><shadow:green>Virtual Sin Forgiveness</shadow></c></b></!i>"))
+            .setComponent(DataComponentTypes.LORE, ItemLore.lore(listOf(createFormatted("And you will know my name is the Lord when I lay my vengeance upon you"))))
             .setComponent(DataComponentTypes.RARITY, ItemRarity.EPIC)
             .setComponent(DataComponentTypes.MAX_STACK_SIZE, 1)
             .setComponent(DataComponentTypes.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.itemAttributes()
@@ -48,22 +54,22 @@ object CustomItemRegistry : SimpleCustomRegistry<CustomItem>(keyOf("quasar", "it
                     Double.MAX_VALUE / 100,
                     AttributeModifier.Operation.ADD_NUMBER))
                 .build())
-            .setComponent(DataComponentTypes.INSTRUMENT, MusicInstrument.create { it ->
-                it.empty()
-                    .description(createFormatted("Your SOUL shines brighter"))
-                    .duration(0.1f)
-                    .soundEvent { it.empty().fixedRange(20f).location(SoundEventKeys.ENTITY_WARDEN_SONIC_BOOM) }
-                    .range(20f)})
-            .setComponent(DataComponentTypes.WEAPON, Weapon.weapon().build())
-            .setBehavior(CustomItemBehaviorTypeRegistry.DEBUG_INTEGER, 67)
-            .setBehavior(CustomItemBehaviorTypeRegistry.DEBUG_NUMBER, 0.123251)
-            .setBehavior(CustomItemBehaviorTypeRegistry.DEBUG_INTEGER, 61)
-            .setBehavior(CustomItemBehaviorTypeRegistry.DEBUG_CUSTOM_DATA, mapOf(
-                keyOf("quasar", "test") to "this is a test",
-                keyOf("quasar", "test_2") to "this is also a test",
-                keyOf("quasar", "registries") to CustomRegistryRegistry
-            ))
-            .removeBehavior(CustomItemBehaviorTypeRegistry.DEBUG_INTEGER)
+            .removeComponent(DataComponentTypes.FOOD)
+            .removeComponent(DataComponentTypes.CONSUMABLE)
+            .build()
+    }
+
+    val entity_eraser = registerHardcoded("entity_eraser") {
+        AdminEraseEntityItem.Builder(keyOf("quasar.core", "entity_eraser"), Material.POISONOUS_POTATO)
+            .deleteLoot(true)
+            .deleteInventory(false)
+            .setComponent(DataComponentTypes.ITEM_MODEL, keyOf("minecraft", "iron_ingot"))
+            .setComponent(DataComponentTypes.ITEM_NAME, createFormatted("Entity Eraser"))
+            .setComponent(DataComponentTypes.LORE, ItemLore.lore(listOf(createFormatted("Kills entities and removes their loot."))))
+            .setComponent(DataComponentTypes.RARITY, ItemRarity.EPIC)
+            .setComponent(DataComponentTypes.MAX_STACK_SIZE, 1)
+            .removeComponent(DataComponentTypes.FOOD)
+            .removeComponent(DataComponentTypes.CONSUMABLE)
             .build()
     }
 }
