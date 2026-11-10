@@ -10,14 +10,15 @@ import io.papermc.paper.command.brigadier.argument.ArgumentTypes
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver
 import io.papermc.paper.datacomponent.DataComponentTypes
 import net.quasarmc.quasar.api.item.commands.arguments.CustomItemStackArgument
+import net.quasarmc.quasar.core.administration.commands.CommandObject
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 /**
  * Give item to player :goog;
  */
-object GiveCommand {
-    val command: LiteralCommandNode<CommandSourceStack> = Commands.literal("give")
+object GiveCommand : CommandObject() {
+    override val command: LiteralCommandNode<CommandSourceStack> = Commands.literal("give")
         .then(Commands.argument("player", ArgumentTypes.players())
             .then(Commands.argument("count", IntegerArgumentType.integer(1, 99))
                 .then(Commands.argument("item", CustomItemStackArgument())

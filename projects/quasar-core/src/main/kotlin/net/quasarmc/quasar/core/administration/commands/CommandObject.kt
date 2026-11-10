@@ -4,6 +4,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import io.papermc.paper.annotation.DoNotUse
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
+import net.quasarmc.quasar.api.item.commands.GiveCommand
 
 /**
  * Every `CommandObject` to be registered.
@@ -13,7 +14,7 @@ import io.papermc.paper.command.brigadier.Commands
  */
 var COMMANDS: MutableList<CommandObject> = mutableListOf(
     // add core commands here
-    QuasarCommand,
+    QuasarCommand, GiveCommand
 )
 
 // (Probably use commands on the datapack if we're having)one)
