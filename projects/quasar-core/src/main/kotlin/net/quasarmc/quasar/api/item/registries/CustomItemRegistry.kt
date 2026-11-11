@@ -59,7 +59,7 @@ object CustomItemRegistry : SimpleCustomRegistry<CustomItem>(keyOf("quasar", "it
             .build()
     }
 
-    val entity_eraser = registerHardcoded("entity_eraser") {
+    val ENTITY_ERASER = registerHardcoded("entity_eraser") {
         AdminEraseEntityItem.Builder(keyOf("quasar.core", "entity_eraser"), Material.POISONOUS_POTATO)
             .deleteLoot(true)
             .deleteInventory(false)
