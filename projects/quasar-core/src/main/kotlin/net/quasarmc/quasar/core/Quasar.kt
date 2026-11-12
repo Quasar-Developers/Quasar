@@ -17,6 +17,7 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import net.quasarmc.quasar.api.addon.AddonManager
 import net.quasarmc.quasar.api.addon.Addon
 import net.quasarmc.quasar.api.addon.registries.AddonRegistry
+import net.quasarmc.quasar.api.item.CustomItemManager
 import net.quasarmc.quasar.core.administration.commands.CommandObject
 import net.quasarmc.quasar.api.item.commands.GiveCommand
 import net.quasarmc.quasar.api.item.registries.CustomItemBehaviorTypeRegistry
@@ -74,6 +75,7 @@ class QuasarPlugin(
         CustomItemRegistry.registerEventHandlers(this) // depends on customitembehaviortyperegistry
 
         server.pluginManager.registerEvents(AddonManager, this)
+        server.pluginManager.registerEvents(CustomItemManager, this)
         server.pluginManager.registerEvents(FakeOperatorPermissionsManager, this)
         server.pluginManager.registerEvents(object : Listener {
             // TODO: This should be handled by the core addon.

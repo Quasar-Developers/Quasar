@@ -1,12 +1,14 @@
 package net.quasarmc.quasar.api.item
 
 import io.papermc.paper.datacomponent.DataComponentType
+import io.papermc.paper.persistence.PersistentDataKey
 import net.quasarmc.quasar.api.keyOf
 import net.quasarmc.quasar.api.registration.CustomResourcePointer
 import net.quasarmc.quasar.api.util.component.CustomComponentMap
 import net.quasarmc.quasar.core.QuasarCoreAddon
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
@@ -71,11 +73,18 @@ open class CustomItem(
      */
     open fun create(): ItemStack = prototype.clone()
 
+    /**
+     * Called when this item receives a PlayerInteractionEvent
+     *
+     * Item is guaranteed to be non-null
+     */
+    open fun onInteract(ev: PlayerInteractEvent) {}
+
     companion object {
         /**
          * The key used to store the item identifier in an item's PDC
          */
-        val PDC_IDENTIFIER_KEY = keyOf("quasar.api", "identifier")
+        val PDC_IDENTIFIER_KEY = PersistentDataKey.of(keyOf("quasar.api", "identifier"), PersistentDataType.STRING)!!
     }
 
     /**
@@ -198,7 +207,7 @@ open class CustomItem(
             }
 
             item.prototype.editPersistentDataContainer {
-                it.set(PDC_IDENTIFIER_KEY, PersistentDataType.STRING, identifier.toString())
+                it[PDC_IDENTIFIER_KEY] = identifier.toString()
             }
 
             return item
