@@ -19,6 +19,7 @@ import net.quasarmc.quasar.api.addon.Addon
 import net.quasarmc.quasar.api.addon.registries.AddonRegistry
 import net.quasarmc.quasar.core.administration.commands.CommandObject
 import net.quasarmc.quasar.core.administration.commands.QuasarCommand
+import net.quasarmc.quasar.core.administration.fakeop.FakeOperatorPermissionsManager
 import org.bukkit.NamespacedKey
 import org.bukkit.event.server.PluginEnableEvent
 
@@ -67,6 +68,7 @@ class QuasarPlugin(
         LOGGER.info("=================================================")
 
         server.pluginManager.registerEvents(AddonManager, this)
+        server.pluginManager.registerEvents(FakeOperatorPermissionsManager, this)
         server.pluginManager.registerEvents(object : Listener {
             // TODO: This should be handled by the core addon.
             @EventHandler
