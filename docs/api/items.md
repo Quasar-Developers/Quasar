@@ -29,12 +29,14 @@ events can be found in the [Paper Javadocs](https://jd.papermc.io/paper).
 The class's builder provides a developer friendly interface for setting up a
 custom item instance's property, behavior components, and prototype. Builders
 are for the most part boilerplate code, and will likely become auto-generated
-some time in the future. Almost all custom item builders follow the following
-pattern:
+some time in the future. There are two types of builders, normal builders and
+abstract builders, which are used in open item classes and have an additional
+type argument for their `this` type. Almost all custom item builders follow
+the following pattern:
 
 ```kotlin
-open class Builder(identifier: NamespacedKey, material: Material)
-         : CustomItemBuilder<CustomItemClass>(identifier, material)
+class Builder(identifier: NamespacedKey, material: Material)
+    : CustomItemBuilder<Builder, CustomItemClass>(identifier, material)
 {
     var itemProperty: ItemPropertyType = itemDefaultValue;
     // more item properties...

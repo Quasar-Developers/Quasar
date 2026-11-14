@@ -5,7 +5,6 @@ import io.papermc.paper.persistence.PersistentDataKey
 import net.quasarmc.quasar.api.keyOf
 import net.quasarmc.quasar.api.registration.CustomResourcePointer
 import net.quasarmc.quasar.api.util.component.CustomComponentMap
-import net.quasarmc.quasar.core.QuasarCoreAddon
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.event.player.PlayerInteractEntityEvent
@@ -96,7 +95,8 @@ open class CustomItem(
     /**
      * Builder for a custom item.
      */
-    abstract class CustomItemBuilder<TSelf : CustomItem>(
+    @Suppress("UNCHECKED_CAST")
+    abstract class CustomItemBuilder<TSelf : CustomItemBuilder<TSelf, TResult>, TResult : CustomItem>(
         protected val identifier: NamespacedKey,
         protected val material: Material
     ) {
@@ -109,10 +109,10 @@ open class CustomItem(
          *
          * @param type The type of component to set
          */
-        fun setComponent(type: DataComponentType.NonValued): CustomItemBuilder<TSelf> {
+        fun setComponent(type: DataComponentType.NonValued): TSelf {
             addedComponents[type] = Unit
             removedComponents.remove(type)
-            return this
+            return this as TSelf
         }
 
         /**
@@ -121,10 +121,10 @@ open class CustomItem(
          * @param type The type of component to set
          * @param data The component data
          */
-        fun <TType : Any> setComponent(type: DataComponentType.Valued<TType>, data: TType): CustomItemBuilder<TSelf> {
+        fun <TType : Any> setComponent(type: DataComponentType.Valued<TType>, data: TType): TSelf {
             addedComponents[type] = data
             removedComponents.remove(type)
-            return this
+            return this as TSelf
         }
 
         /**
@@ -132,10 +132,10 @@ open class CustomItem(
          *
          * @param type The type of component to remove
          */
-        fun removeComponent(type: DataComponentType): CustomItemBuilder<TSelf> {
+        fun removeComponent(type: DataComponentType): TSelf {
             addedComponents.remove(type)
             removedComponents.add(type)
-            return this
+            return this as TSelf
         }
 
         /**
@@ -144,8 +144,8 @@ open class CustomItem(
          * @param type  The type of component to add
          * @param value The value of the component
          */
-        fun <TType : Any> setBehavior(type: CustomItemBehaviorType<TType>, value: TType): CustomItemBuilder<TSelf>
-            = this.apply { this.behavior.set(type, value) }
+        fun <TType : Any> setBehavior(type: CustomItemBehaviorType<TType>, value: TType): TSelf
+            = this.apply { this.behavior.set(type, value) } as TSelf
 
         /**
          * Add a behavior component to the item
@@ -153,7 +153,7 @@ open class CustomItem(
          * @param type  The type of component to add
          * @param value The value of the component
          */
-        fun <TType : Any> setBehavior(type: CustomResourcePointer<CustomItemBehaviorType<TType>>, value: TType): CustomItemBuilder<TSelf>
+        fun <TType : Any> setBehavior(type: CustomResourcePointer<CustomItemBehaviorType<TType>>, value: TType): TSelf
             = setBehavior(type.get(), value)
 
         /**
@@ -161,7 +161,7 @@ open class CustomItem(
          *
          * @param type The type of component to add
          */
-        fun setBehavior(type: CustomItemBehaviorType<Unit>): CustomItemBuilder<TSelf>
+        fun setBehavior(type: CustomItemBehaviorType<Unit>): TSelf
             = setBehavior(type, Unit)
 
         /**
@@ -169,7 +169,7 @@ open class CustomItem(
          *
          * @param type The type of component to add
          */
-        fun setBehavior(type: CustomResourcePointer<CustomItemBehaviorType<Unit>>): CustomItemBuilder<TSelf>
+        fun setBehavior(type: CustomResourcePointer<CustomItemBehaviorType<Unit>>): TSelf
             = setBehavior(type.get())
 
         /**
@@ -177,15 +177,15 @@ open class CustomItem(
          *
          * @param type The type of component to remove
          */
-        fun <TType : Any> removeBehavior(type: CustomItemBehaviorType<TType>): CustomItemBuilder<TSelf>
-            = this.apply { this.behavior.remove(type) }
+        fun <TType : Any> removeBehavior(type: CustomItemBehaviorType<TType>): TSelf
+            = this.apply { this.behavior.remove(type) } as TSelf
 
         /**
          * Remove a behavior component from the item
          *
          * @param type The type of component to remove
          */
-        fun <TType : Any> removeBehavior(type: CustomResourcePointer<CustomItemBehaviorType<TType>>): CustomItemBuilder<TSelf>
+        fun <TType : Any> removeBehavior(type: CustomResourcePointer<CustomItemBehaviorType<TType>>): TSelf
             = removeBehavior(type.get())
 
         /**
@@ -193,14 +193,14 @@ open class CustomItem(
          *
          * Prefer [augment] when applying properties to the item.
          */
-        abstract fun build(): TSelf
+        abstract fun build(): TResult
 
         /**
          * Apply the collected properties to the custom item.
          *
          * Call this in inheriting [build] methods
          */
-        open fun augment(item: TSelf): TSelf {
+        open fun augment(item: TResult): TResult {
             for (comp in removedComponents)
                 item.prototype.unsetData(comp)
 
@@ -223,7 +223,7 @@ open class CustomItem(
     /**
      * Builder for base CustomItems.
      */
-    class Builder(identifier: NamespacedKey, material: Material) : CustomItemBuilder<CustomItem>(identifier, material) {
+    class Builder(identifier: NamespacedKey, material: Material) : CustomItemBuilder<Builder, CustomItem>(identifier, material) {
         override fun build(): CustomItem {
             val item = CustomItem(identifier, ItemStack.of(this.material), this.behavior.build())
 

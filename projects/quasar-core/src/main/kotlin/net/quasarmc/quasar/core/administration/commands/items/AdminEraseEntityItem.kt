@@ -24,7 +24,7 @@ import kotlin.math.pow
 /**
  * An admin tool that instantly kills a clicked entity.
  */
-open class AdminEraseEntityItem(
+class AdminEraseEntityItem(
     identifier: NamespacedKey,
     prototype: ItemStack,
     behavior: CustomComponentMap<CustomItemBehaviorType<Any>, Any>,
@@ -32,22 +32,22 @@ open class AdminEraseEntityItem(
     /**
      * Remove dropped entity loot.
      */
-    protected val deleteLoot: Boolean,
+    val deleteLoot: Boolean,
 
     /**
      * Remove inventory items.
      */
-    protected val deleteInventory: Boolean,
+    val deleteInventory: Boolean,
 
     /**
      * Sound to play
      */
-    protected val sound: Key?,
+    val sound: Key?,
 
     /**
      * Draw an effect indicating admin action (aura)
      */
-    protected val spawnParticles: Boolean
+    val spawnParticles: Boolean
 ) : CustomItem(identifier, prototype, behavior) {
     override fun onInteract(ev: PlayerInteractEvent) {
         if (!doPermissionCheck(ev.player, ev.hand))
@@ -66,7 +66,7 @@ open class AdminEraseEntityItem(
         erase(ev.player, ev.rightClicked)
     }
 
-    fun doPermissionCheck(player: Player, hand: EquipmentSlot?): Boolean {
+    private fun doPermissionCheck(player: Player, hand: EquipmentSlot?): Boolean {
         if (!player.hasPermission("quasar.core.admin.erase_entity")) {
             player.sendRichMessage("<c:red><i>The artifact fizzles away in your hand</i></c:red>")
             when (hand) {
@@ -83,7 +83,7 @@ open class AdminEraseEntityItem(
         return true
     }
 
-    fun erase(player: Player, target: Entity) {
+    private fun erase(player: Player, target: Entity) {
         if (!deleteLoot && target is Mob) {
             val loot = target.lootTable?.populateLoot(null, LootContext.Builder(target.location)
                 .lootedEntity(target)
@@ -120,7 +120,7 @@ open class AdminEraseEntityItem(
         }
     }
 
-    open class Builder(identifier: NamespacedKey, material: Material) : CustomItemBuilder<AdminEraseEntityItem>(identifier, material) {
+    class Builder(identifier: NamespacedKey, material: Material) : CustomItemBuilder<Builder, AdminEraseEntityItem>(identifier, material) {
         var itemDeleteLoot: Boolean = true;
         var itemDeleteInventory: Boolean = false;
         var itemSound: Key? = null;
