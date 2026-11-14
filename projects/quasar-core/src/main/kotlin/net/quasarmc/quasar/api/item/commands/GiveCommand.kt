@@ -8,10 +8,8 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver
-import io.papermc.paper.datacomponent.DataComponentTypes
 import net.quasarmc.quasar.api.item.commands.arguments.CustomItemStackArgument
 import net.quasarmc.quasar.core.administration.commands.CommandObject
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 /**
