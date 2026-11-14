@@ -85,6 +85,31 @@ All custom item instances in Core can be found in the `CoreCustomItems` object.
 All custom item instances used for debugging the Quasar API can be found directly
 defined in the `CustomItemRegistry` object.
 
+A good example of a custom item instance is the admin entity eraser:
+
+```kotlin
+// Start with the identifier and base item. I often use poisonous potatoes since they don't have much special behavior
+// and they don't interact with many vanilla game systems.
+AdminEraseEntityItem.Builder(keyOf("quasar.core", "entity_eraser"), Material.POISONOUS_POTATO)
+    // Properties on the custom item class.
+    .deleteLoot(true)
+    .deleteInventory(false)
+    // Setting up vanilla components
+    .setComponent(DataComponentTypes.ITEM_MODEL, keyOf("minecraft", "iron_ingot"))
+    .setComponent(DataComponentTypes.ITEM_NAME, createFormatted("Entity Eraser"))
+    .setComponent(DataComponentTypes.LORE, ItemLore.lore(listOf(createFormatted("Kills entities and removes their loot."))))
+    .setComponent(DataComponentTypes.RARITY, ItemRarity.EPIC)
+    .setComponent(DataComponentTypes.MAX_STACK_SIZE, 1)
+    .removeComponent(DataComponentTypes.FOOD)
+    .removeComponent(DataComponentTypes.CONSUMABLE)
+    // Setting up Quasar components (taken from quasar.api:debug_item)
+    .setBehavior(CustomItemBehaviorTypeRegistry.DEBUG_CUSTOM_DATA, mapOf(
+        keyOf("quasar.api", "works") to true
+    ))
+    // Constructing the custom item instance
+    .build()
+```
+
 ## Behavior Components
 
 As mentioned previously, behavior components are values set on custom item instances
