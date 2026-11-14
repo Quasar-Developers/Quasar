@@ -30,6 +30,9 @@ object CustomItemRegistry : SimpleCustomRegistry<CustomItem>(keyOf("quasar", "it
             .setComponent(DataComponentTypes.MAX_STACK_SIZE, 1)
             .removeComponent(DataComponentTypes.FOOD)
             .removeComponent(DataComponentTypes.CONSUMABLE)
+            .setBehavior(CustomItemBehaviorTypeRegistry.DEBUG_CUSTOM_DATA, mapOf(
+                keyOf("quasar.api", "works") to true
+            ))
             .build()
     }
 }
