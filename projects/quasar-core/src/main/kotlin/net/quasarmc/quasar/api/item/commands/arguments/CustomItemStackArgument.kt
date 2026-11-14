@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture
  * Shared logic for [CustomItemStackArgument] and [MiniCustomItemStackArgument]
  */
 class CustomItemStackArgument(
-    defaultNamespace: String = "quasar.core",
+    defaultNamespace: String = "minecraft",
     val includeVanilla: Boolean = true
 ) : BaseCustomNamespacedKeyArgument<ItemStack, NamespacedKey>(CustomItemRegistry, defaultNamespace) {
     protected val vanillaItemRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ITEM)
