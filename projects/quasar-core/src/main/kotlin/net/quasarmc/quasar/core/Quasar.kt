@@ -24,6 +24,7 @@ import net.quasarmc.quasar.api.item.registries.CustomItemBehaviorTypeRegistry
 import net.quasarmc.quasar.api.item.registries.CustomItemRegistry
 import net.quasarmc.quasar.core.administration.commands.QuasarCommand
 import net.quasarmc.quasar.core.administration.fakeop.FakeOperatorPermissionsManager
+import net.quasarmc.quasar.core.registration.CoreCustomItems
 import org.bukkit.NamespacedKey
 import org.bukkit.event.server.PluginEnableEvent
 
@@ -75,6 +76,7 @@ class QuasarPlugin(
         CustomItemRegistry.registerEventHandlers(this) // depends on customitembehaviortyperegistry
 
         server.pluginManager.registerEvents(AddonManager, this)
+        server.pluginManager.registerEvents(CoreCustomItems.loader, this)
         server.pluginManager.registerEvents(CustomItemManager, this)
         server.pluginManager.registerEvents(FakeOperatorPermissionsManager, this)
         server.pluginManager.registerEvents(object : Listener {
