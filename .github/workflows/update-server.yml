@@ -1,0 +1,57 @@
+# update server plugin
+# ssh key in SSH_KEY
+# lay out server sftp targets (one word each :godo:) like this:
+# NAME LOCATION PORT USER
+# NAME LOCATION PORT USER
+# etc
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-provider: basic # nice try
+      - name: Compile Plugin
+        run: ./gradlew packageServer
+      - name: Upload to Server
+        env:
+          SSH_KEY:          ${{ secrets.SSH_KEY }}
+          SERVER_SFTP_URLS: ${{ secrets.SERVER_SFTP_TARGETS }}
+        shell: bash
+        run: |
+          # this is actual cancer
+          TARGET_COUNT=$(($(echo "$SERVER_SFTP_TARGETS" | wc -l) / 4))
+          TARGETS=($SERVER_SFTP_TARGETS)
+          
+          # set up key
+          echo "$SSH_KEY" > key
+          KEY="$PWD/key"
+          
+          # enter files
+          pushd projects/quasar-core/build/package
+          unzip quasar-server.zip -d quasar-server
+          pushd quasar-server
+          
+          # upload files to server
+          for ((i=0;i<$TARGET_COUNT;i++)); do
+            echo "::add-mask::${TARGETS[$(($i * 4 + 1))]}"
+            echo "::add-mask::${TARGETS[$(($i * 4 + 2))]}"
+            echo "::add-mask::${TARGETS[$(($i * 4 + 3))]}"
+            echo "::group::Uploading files to ${TARGETS[$(($i * 4))]}"
+          
+            sftp ${TARGETS[$(($i * 4 + 3))]}@${TARGETS[$(($i * 4 + 1))]} -p ${TARGETS[$(($i * 4 + 2))]} <<....END
+              cd plugins
+              put plugins/*
+          ....END
+          
+            echo "::endgroup::"
+          done
+          
+          shred -u "$KEY"
