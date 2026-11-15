@@ -52,7 +52,7 @@ jobs:
             echo "::add-mask::${TARGETS[$(($i * 4 + 3))]}"
             echo "::group::Uploading files to ${TARGETS[$(($i * 4))]}"
           
-            sftp -P ${TARGETS[$(($i * 4 + 2))]} -b - ${TARGETS[$(($i * 4 + 3))]}@${TARGETS[$(($i * 4 + 1))]} <<....END
+            sftp -i $KEY -P ${TARGETS[$(($i * 4 + 2))]} -b - ${TARGETS[$(($i * 4 + 3))]}@${TARGETS[$(($i * 4 + 1))]} <<....END
               cd plugins
               put plugins/*
           ....END
