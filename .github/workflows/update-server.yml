@@ -38,6 +38,7 @@ jobs:
           
           # set up key
           echo "$SSH_KEY" > key
+          chmod go-rwx key
           KEY="$PWD/key"
           
           # enter files
