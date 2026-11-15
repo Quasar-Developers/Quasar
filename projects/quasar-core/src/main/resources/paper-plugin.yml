@@ -26,4 +26,6 @@ permissions:
           2: { description: "Permission Level 2", default: false }
           3: { description: "Permission Level 3", default: false }
           4: { description: "Permission Level 4", default: false }
-
+      sudo:
+        description: sudo make me a sandwich
+        default:     false

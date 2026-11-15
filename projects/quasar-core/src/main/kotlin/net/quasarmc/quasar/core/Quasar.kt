@@ -1,5 +1,12 @@
 package net.quasarmc.quasar.core
 
+import com.mojang.brigadier.Command
+import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.context.CommandContext
+import io.papermc.paper.command.brigadier.CommandSourceStack
+import io.papermc.paper.command.brigadier.Commands
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes
+import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
@@ -14,6 +21,16 @@ import io.papermc.paper.plugin.bootstrap.BootstrapContext
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
+import net.kyori.adventure.text.ComponentLike
+import net.minecraft.commands.CommandSource
+import net.minecraft.core.registries.Registries
+import net.minecraft.resources.ResourceKey
+import net.minecraft.server.MinecraftServer
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.permissions.Permission
+import net.minecraft.server.permissions.PermissionSet
+import net.minecraft.world.phys.Vec2
+import net.minecraft.world.phys.Vec3
 import net.quasarmc.quasar.api.addon.AddonManager
 import net.quasarmc.quasar.api.addon.Addon
 import net.quasarmc.quasar.api.addon.registries.AddonRegistry
@@ -22,10 +39,16 @@ import net.quasarmc.quasar.core.administration.commands.CommandObject
 import net.quasarmc.quasar.api.item.commands.GiveCommand
 import net.quasarmc.quasar.api.item.registries.CustomItemBehaviorTypeRegistry
 import net.quasarmc.quasar.api.item.registries.CustomItemRegistry
+import net.quasarmc.quasar.api.toNMSKey
 import net.quasarmc.quasar.core.administration.commands.QuasarCommand
 import net.quasarmc.quasar.core.administration.fakeop.FakeOperatorPermissionsManager
 import net.quasarmc.quasar.core.registration.CoreCustomItems
+import org.bukkit.Location
 import org.bukkit.NamespacedKey
+import org.bukkit.command.CommandSender
+import org.bukkit.craftbukkit.entity.CraftPlayer
+import org.bukkit.entity.Entity
+import org.bukkit.entity.Player
 import org.bukkit.event.server.PluginEnableEvent
 
 @Suppress("UnstableApiUsage")
@@ -94,6 +117,47 @@ class QuasarPlugin(
             val registry = it.registrar();
 
             CommandObject.registerCommands(registry)
+
+            // TODO(XWH): command refactor
+            registry.register(Commands.literal("sudo")
+                .then(Commands.argument("player", ArgumentTypes.player())
+                    .then(Commands.literal("say").then(
+                        Commands.argument("text", StringArgumentType.greedyString())
+                            .executes { ctx ->
+                                val resolver = ctx.getArgument("player", PlayerSelectorArgumentResolver::class.java)
+                                val player = resolver.resolve(ctx.source)[0];
+
+                                player.chat(StringArgumentType.getString(ctx, "text"))
+
+                                return@executes Command.SINGLE_SUCCESS
+                            }))
+                    .then(Commands.literal("execute").redirect(registry.dispatcher.root) { ctx ->
+                        val resolver = ctx.getArgument("player", PlayerSelectorArgumentResolver::class.java)
+                        val player = resolver.resolve(ctx.source)[0];
+
+                        val source = object : CommandSource {
+                            override fun sendSystemMessage(msg: net.minecraft.network.chat.Component)
+                                = (player as CraftPlayer).handle.sendSystemMessage(msg)
+
+                            override fun acceptsSuccess(): Boolean = true
+                            override fun acceptsFailure(): Boolean = true
+                            override fun shouldInformAdmins(): Boolean = false
+
+                            override fun getBukkitSender(p0: net.minecraft.commands.CommandSourceStack): CommandSender
+                                = player
+                        }
+
+                        net.minecraft.commands.CommandSourceStack(
+                            source,
+                            player.location.let { p -> Vec3(p.x, p.y, p.z) },
+                            player.location.rotation.let { p -> Vec2(p.pitch(), p.yaw()) },
+                            (player as CraftPlayer).handle.level(),
+                            player.handle.permissions(),
+                            MinecraftServer.getServer(),
+                            player.handle.livingEntity
+                        )
+                    }))
+                .build())
         }
     }
 
