@@ -1,5 +1,5 @@
 val buildMetaProperties = mapOf(
-    "version"   to "3.0.0.1",
+    "version"   to "0.1.0",
     "commit"    to providers.exec { commandLine("git", "describe", "--always", "--tags", "--abbrev=10", "--dirty") }.standardOutput.asText.get().trim(),
     "sourceURL" to "https://github.com/Quasar-Developers/Quasar/"
 )

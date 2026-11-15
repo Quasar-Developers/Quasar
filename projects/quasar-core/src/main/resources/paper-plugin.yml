@@ -6,7 +6,7 @@ author:      Quasar Contributors (see GitHub)
 
 main:         net.quasarmc.quasar.core.QuasarPlugin
 bootstrapper: net.quasarmc.quasar.core.QuasarPluginBootstrap
-api-version:  '26.2'
+api-version:  '26.3'
 load:         STARTUP
 prefix:       Quasar
 
