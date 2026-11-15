@@ -14,18 +14,30 @@ permissions:
   quasar.core.admin:
     description: Administration
     children:
-      erase_entity:
+      quasar.core.admin.erase_entity:
         description: Allow use of the Entity Eraser
         default:     false
-      fakeop:
+      quasar.core.admin.fakeop:
         description: Spoof the client being a certain permission level.
         default:     false
         children:
-          0: { description: "Permission Level 0", default: false }
-          1: { description: "Permission Level 1", default: false }
-          2: { description: "Permission Level 2", default: false }
-          3: { description: "Permission Level 3", default: false }
-          4: { description: "Permission Level 4", default: false }
-      sudo:
+          quasar.core.admin.fakeop.0: { description: "Permission Level 0", default: false }
+          quasar.core.admin.fakeop.1: { description: "Permission Level 1", default: false }
+          quasar.core.admin.fakeop.2: { description: "Permission Level 2", default: false }
+          quasar.core.admin.fakeop.3: { description: "Permission Level 3", default: false }
+          quasar.core.admin.fakeop.4: { description: "Permission Level 4", default: false }
+      quasar.core.admin.command.give:
+        description: Quasar give command
+        default:     false
+  quasar.core.debug:
+    description: |
+      Dangerous commands that can break the game for use in debugging Quasar.
+      Nobody should have these, not even staff.
+    default: false
+    children:
+      quasar.core.debug.registry:
+        description: Tools for examining and manipulating registries.
+        default:     false
+      quasar.core.debug.command.sudo:
         description: sudo make me a sandwich
         default:     false

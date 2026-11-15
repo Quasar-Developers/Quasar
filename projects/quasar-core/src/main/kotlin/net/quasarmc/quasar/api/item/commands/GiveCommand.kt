@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack
  */
 object GiveCommand : CommandObject() {
     override val command: LiteralCommandNode<CommandSourceStack> = Commands.literal("give")
+        .requires { source -> source.sender.hasPermission("quasar.core.admin.command.give") }
         .then(Commands.argument("player", ArgumentTypes.players())
             .then(Commands.argument("count", IntegerArgumentType.integer(1, 99))
                 .then(Commands.argument("item", CustomItemStackArgument())

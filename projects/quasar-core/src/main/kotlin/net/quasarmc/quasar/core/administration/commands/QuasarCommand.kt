@@ -31,6 +31,7 @@ object QuasarCommand: CommandObject() {
                 .then(Commands.argument("identifier", CustomNamespacedKeyArgument(AddonRegistry, "quasar"))
                     .executes(QuasarCommand::addonShow))))
         .then(Commands.literal("registry")
+            .requires { source -> source.sender.hasPermission("quasar.core.debug.registry") }
             .then(Commands.literal("reload").executes(QuasarCommand::registryReload))
             .then(Commands.literal("dump")
                 .then(Commands.argument("identifier", CustomNamespacedKeyArgument(CustomRegistryRegistry, "quasar"))

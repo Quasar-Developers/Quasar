@@ -120,6 +120,7 @@ class QuasarPlugin(
 
             // TODO(XWH): command refactor
             registry.register(Commands.literal("sudo")
+                .requires { source -> source.sender.hasPermission("quasar.core.debug.command.sudo") }
                 .then(Commands.argument("player", ArgumentTypes.player())
                     .then(Commands.literal("say").then(
                         Commands.argument("text", StringArgumentType.greedyString())
