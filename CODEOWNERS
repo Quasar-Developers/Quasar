@@ -1,3 +1,7 @@
 # Require server head review for changing licensing details
 /LICENSE.md @Quasar-Developers/Directors
 /LICENSES/  @Quasar-Developers/Directors
+
+# Require headcoder review for build/ci changes
+/.github/workflows @XWasHere
+build.gradle.kts   @XWasHere

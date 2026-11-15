@@ -4,6 +4,11 @@
 # NAME LOCATION PORT USER
 # NAME LOCATION PORT USER
 # etc
+concurrency: # avoid race condition with server files on multiple pushes/merges in a short period of time
+  group: server-update
+  queue: max
+permissions:
+  contents: read
 on:
   push:
     branches: [ master ]
@@ -18,16 +23,17 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
         with:
           cache-provider: basic # nice try
+          validate-wrappers: false # TODO(XWH) update to modern gradle and fix this
       - name: Compile Plugin
         run: ./gradlew packageServer
       - name: Upload to Server
         env:
-          SSH_KEY:          ${{ secrets.SSH_KEY }}
-          SERVER_SFTP_URLS: ${{ secrets.SERVER_SFTP_TARGETS }}
+          SSH_KEY:             ${{ secrets.SSH_KEY }}
+          SERVER_SFTP_TARGETS: ${{ secrets.SERVER_SFTP_TARGETS }}
         shell: bash
         run: |
           # this is actual cancer
-          TARGET_COUNT=$(($(echo "$SERVER_SFTP_TARGETS" | wc -l) / 4))
+          TARGET_COUNT=$(($(echo "$SERVER_SFTP_TARGETS" | wc -w) / 4))
           TARGETS=($SERVER_SFTP_TARGETS)
           
           # set up key
@@ -42,11 +48,11 @@ jobs:
           # upload files to server
           for ((i=0;i<$TARGET_COUNT;i++)); do
             echo "::add-mask::${TARGETS[$(($i * 4 + 1))]}"
-            echo "::add-mask::${TARGETS[$(($i * 4 + 2))]}"
+            # echo "::add-mask::${TARGETS[$(($i * 4 + 2))]}" that's really funny but also mangles the output
             echo "::add-mask::${TARGETS[$(($i * 4 + 3))]}"
             echo "::group::Uploading files to ${TARGETS[$(($i * 4))]}"
           
-            sftp ${TARGETS[$(($i * 4 + 3))]}@${TARGETS[$(($i * 4 + 1))]} -p ${TARGETS[$(($i * 4 + 2))]} <<....END
+            sftp -P ${TARGETS[$(($i * 4 + 2))]} -b - ${TARGETS[$(($i * 4 + 3))]}@${TARGETS[$(($i * 4 + 1))]} <<....END
               cd plugins
               put plugins/*
           ....END
