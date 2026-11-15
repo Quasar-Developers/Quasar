@@ -22,8 +22,8 @@ permissions:
         default:     false
         children:
           0: { description: "Permission Level 0", default: false }
-          0: { description: "Permission Level 1", default: false }
-          0: { description: "Permission Level 2", default: false }
-          0: { description: "Permission Level 3", default: false }
-          0: { description: "Permission Level 4", default: false }
+          1: { description: "Permission Level 1", default: false }
+          2: { description: "Permission Level 2", default: false }
+          3: { description: "Permission Level 3", default: false }
+          4: { description: "Permission Level 4", default: false }
 
