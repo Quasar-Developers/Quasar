@@ -1,4 +1,4 @@
-package net.quasarmc.quasar.core.administration.commands.items
+package net.quasarmc.quasar.core.administration.items
 
 import net.kyori.adventure.key.Key
 import net.quasarmc.quasar.api.item.CustomItem

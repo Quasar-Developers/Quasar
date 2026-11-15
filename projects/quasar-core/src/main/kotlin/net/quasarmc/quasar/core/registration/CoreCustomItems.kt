@@ -7,10 +7,9 @@ import io.papermc.paper.registry.keys.SoundEventKeys
 import net.quasarmc.quasar.api.createFormatted
 import net.quasarmc.quasar.api.item.CustomItem
 import net.quasarmc.quasar.api.item.registries.CustomItemRegistry
-import net.quasarmc.quasar.api.item.registries.CustomItemRegistry.registerHardcoded
 import net.quasarmc.quasar.api.keyOf
 import net.quasarmc.quasar.api.registration.HardcodedCustomRegistryLoader
-import net.quasarmc.quasar.core.administration.commands.items.AdminEraseEntityItem
+import net.quasarmc.quasar.core.administration.items.AdminEraseEntityItem
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
