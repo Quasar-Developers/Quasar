@@ -29,6 +29,9 @@ permissions:
       quasar.core.admin.command.give:
         description: Quasar give command
         default:     false
+      quasar.core.admin.command.suicide:
+        description: /kill for regular players
+        default:     true
   quasar.core.debug:
     description: |
       Dangerous commands that can break the game for use in debugging Quasar.

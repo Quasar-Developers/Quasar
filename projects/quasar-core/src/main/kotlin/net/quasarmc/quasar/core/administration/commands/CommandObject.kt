@@ -14,7 +14,7 @@ import net.quasarmc.quasar.api.item.commands.GiveCommand
  */
 var COMMANDS: MutableList<CommandObject> = mutableListOf(
     // add core commands here
-    QuasarCommand, GiveCommand
+    QuasarCommand, GiveCommand, SuicideCommand
 )
 
 // (Probably use commands on the datapack if we're having)one)
