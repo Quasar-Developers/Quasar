@@ -122,6 +122,7 @@ class QuasarPlugin(
             registry.register(Commands.literal("sudo")
                 .requires { source -> source.sender.hasPermission("quasar.core.debug.command.sudo") }
                 .then(Commands.argument("player", ArgumentTypes.player())
+                    /*
                     .then(Commands.literal("say").then(
                         Commands.argument("text", StringArgumentType.greedyString())
                             .executes { ctx ->
@@ -132,6 +133,7 @@ class QuasarPlugin(
 
                                 return@executes Command.SINGLE_SUCCESS
                             }))
+                     */
                     .then(Commands.literal("execute").redirect(registry.dispatcher.root) { ctx ->
                         val resolver = ctx.getArgument("player", PlayerSelectorArgumentResolver::class.java)
                         val player = resolver.resolve(ctx.source)[0];
