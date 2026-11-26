@@ -1,5 +1,7 @@
 # Quasar Monorepo
 
+<div align="center"><a href="https://discord.gg/jaRf85EPQR">[Discord]</a></div><p/>
+
 Quasar is a collection of plugins, data/resource packs, and tools aiming to
 implement modded gameplay on vanilla Minecraft clients. 
 
